@@ -1,0 +1,2020 @@
+/* ===========================================================================
+   style.css - the classic 2007 RuneScape interface skin.
+
+   Everything here is measured in *frame pixels* against the 765x503 window that
+   src/gameframe.js builds, so the whole interface scales with a single CSS
+   transform on .frame. Colours are the client's own: side-panel parchment text
+   0xffd97a, level numbers 0xffff00, menu brown 0x5D5447, black menu header
+   bands, the chat message colours, the chat-mode colours.
+
+   Two rules that matter:
+     * .spr / .tilebg draw one sprite out of the baked interface atlas
+       (src/sprites/ui/frame.png). They must be image-rendering:pixelated, or
+       upscaling smears the sprite art. .spr is absolutely positioned (an
+       ornament sitting on a known pixel); .tilebg flows (a slot in a grid).
+     * Text uses the embedded bitmap fonts (src/fonts.css) at their native size -
+       10px for plain 11, 12px for plain 12 and bold 12 - which is what makes it
+       identical to the text the client itself would draw.
+   =========================================================================== */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000;
+  color: #fff;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  text-align: left;               /* the platform defaults body to center */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  /* Mobile browsers inflate the font of a "wide" text block to make it legible
+     (Android/Samsung font boosting), which silently breaks every frame pixel
+     measurement here: a 12px line would render at some made-up size and the
+     chatbox would overflow its own artwork. These two keep the frame at its
+     real size on a phone. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+img { -webkit-user-drag: none; }
+
+#frameHost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  /* `inset: 0` would size this box from the *layout* viewport, which on a phone
+     is not the same thing as the screen: Android Chrome's layout viewport is
+     the "URL bar hidden" height even while the bar is showing, so the frame
+     would be scaled to a taller box than the player can see and its bottom -
+     the chatbox, the inventory - would sit under the browser chrome with
+     `overflow: hidden` making it unreachable. That only shows up in *landscape*,
+     where the height is the axis the fit is limited by; in portrait the width
+     limits it and the error is invisible. The dynamic viewport units (`dvh` /
+     `dvw`) are exactly "the part of the viewport that is really on screen right
+     now", so the frame is measured against the screen the player has; the
+     `vh`/`vw` pair above each is the fallback for browsers without them (and
+     src/gameframe.js#setScale caps the measurement again from the visual
+     viewport, so an engine that has neither still cannot clip). */
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+}
+
+.frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(1);
+  overflow: hidden;
+  background: #000;
+  /* No `transition` on the transform, deliberately: the typing zoom
+     (src/gameframe.js#setTyping -> _applyTransform -> _moveTo) tweens itself
+     from requestAnimationFrame. A CSS transition runs on the document
+     timeline, which is frozen while the page is hidden - and the editor's
+     preview iframe reports document.hidden === true, so a transition there
+     would leave `transform` pinned to its old value, i.e. the whole interface
+     failing to fit the screen. */
+}
+
+.layer { position: absolute; left: 0; top: 0; }
+#frame { touch-action: none; overscroll-behavior: none; }
+#frame input, #frame textarea, #frame select, #frame button { touch-action: auto; }
+.viewport { touch-action: none; }
+.chatlog { touch-action: none; }
+.ctxmenu { touch-action: none; }
+/* The two native scrollers keep their finger: `pan-y` scrolls the box the
+   finger is on without ever scrolling or zooming the page itself. */
+.sideScroll, .nameList { touch-action: pan-y; }
+/* every child of a layer is positioned by its inline left/top, so it must be
+   absolutely positioned even if it carries no other styling of its own */
+.layer.map > *, .layer.chrome > *, .layer.tabs > * { position: absolute; }
+
+/* The overlay layer is a full-frame float container (orbs, context menus,
+   modals, hover text, the full interfaces) that sits above every other layer.
+   It must be transparent to the pointer - only the interactive children listed
+   here take hits - otherwise it covers the 3D canvas and the tabs/side panel
+   and swallows every click meant for the world. */
+.layer.overlay { pointer-events: none; }
+.layer.overlay > .orb,
+.layer.overlay > .ctxmenu,
+.layer.overlay > .modallayer,
+.layer.overlay > .sidescroll { pointer-events: auto; }
+
+/* The client's own pre-game screen (src/titlescreen.js). It is the overlay
+   layer's first child, so it covers the frame chrome and the world but the
+   hover tip and the corner counters still paint over it - the client's welcome
+   screen has hovering text on top of it too. It *takes* the pointer, which is
+   what stops the world underneath from being hovered or turned while it is up:
+   the client's own input listeners are on the game canvas, so a hit-testable
+   layer over that canvas is enough. */
+.layer.titlescreen { pointer-events: auto; }
+
+/* The login window on the welcome screen (src/titlescreen.js): username and
+   password side by side, the two buttons under them, one status line. It sits
+   in the empty band below the play button, so no cache art is ever covered. */
+.titleauth { text-align: center; }
+.titleauth .taRow { margin: 3px 0; }
+.titleauth .taRow + .taRow { margin-top: 12px; }
+.titleauth .taName, .titleauth .taPass { display: block; width: 210px; margin: 3px auto; }
+.titleauth .taPass { -webkit-text-security: disc; }
+.titleauth .rs-btn { margin: 0 6px; font-size: 14px; padding: 6px 16px; text-align: center; }
+.titleauth .taStatus { margin-top: 4px; color: #e8e0d0; font-size: 12px; min-height: 15px; }
+.titleauth .taOut { margin-top: 2px; }
+/* The pre-title screen's own layer (src/titlescreen.js): plain black, game
+   name up top, the login window centered under it. */
+.layer.titleauthscreen { background: rgba(16,16,16,0.7); pointer-events: auto; }
+.frame.authpan > .layer.chrome,
+.frame.authpan > .layer.map,
+.frame.authpan > .layer.tabs,
+.frame.authpan > .layer.side,
+.frame.authpan > .layer.chat,
+.frame.authpan > .layer.chatbuttons { display: none; }
+.frame.authpan > .layer.viewport { left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; }
+.frame.authpan > .layer.viewport #gameCanvas,
+.frame.authpan > .layer.viewport #fxLayer { width: 100% !important; height: 100% !important; }
+.taPre { position: absolute; left: 0; right: 0; top: calc(50% + 24px); transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; text-align: center; }
+.taTitle { font-family: "rs-bold12", monospace; font-size: 16px; color: #ffff00; text-shadow: 1px 1px 0 #000; margin-bottom: 16px; width: 100%; text-align: center; }
+.taNew { color: #e8e0d0; font-size: 12px; margin-top: 10px; text-shadow: 1px 1px 0 #000; }
+.taPre .rs-btn.taGuestBtn { margin-top: 14px; font-size: 18px; padding: 8px 30px; }
+.taCounters { position: absolute; right: 10px; bottom: 8px; display: flex; flex-direction: column; align-items: flex-end; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 13px; color: #ffffff; opacity: 0.85; text-shadow: 1px 1px 0 #000; pointer-events: none; }
+.taCounters span:empty { display: none; }
+/* The welcome screen's one line (same module): who Play lets in, and out. */
+.taWelcome { position: absolute; text-align: center; color: #e8e0d0; font-size: 12px; }
+.taWelcomeOut { position: absolute; }
+
+/* The client's character-design screen (src/design.js), cache interface 269.
+   The cache lays it out to fill the 512x334 game view - its plates span (12,4)
+   to (500,320) of it, the same way the bank's do - so it is a clipped box over
+   the game view rather than a full-frame screen: the chrome, the side panel and
+   the chatbox stay visible around it, and the client's own clip cuts off the
+   few rivets the cache places at x -3 / y -11. Its z-index puts it above the
+   orb cluster (like #fullIface) but below the context menu, the modals and the
+   hover tip, so those still paint over it. */
+.designIface, .nameIface {
+  position: absolute;
+  z-index: 35;
+  overflow: hidden;
+  pointer-events: auto;
+}
+/* the look being designed, painted by the renderer into the model widget's own
+   box (View.drawDoll), so it wants the same crisp scaling as the equip doll.
+   The name step (src/charname.js) paints the same widget the same way - its
+   window is interface 269's own, with the character still standing in it. */
+.designDoll {
+  position: absolute;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+/* The name step's field: the same dark well the account panel's fields are
+   (`.rs-field`), placed inside the window instead of in a modal row - the
+   frame's own font, the client's sunken bevel (dark above and left, lit below
+   and right) and the orange caret. Its position is written inline from the
+   screen's own FIELD box (src/charname.js), so the well and the plate drawn
+   under it cannot drift apart.
+
+   The selector carries the layer's class because the platform's own sheet sets
+   `color: inherit` on every enabled input (specificity 0-1-1, which a bare
+   class does not beat), and this field's text is the game's gold rather than the
+   page's white. */
+.nameIface .nameEntryField {
+  position: absolute;
+  box-sizing: border-box;
+  background: #2b2620;
+  border: 1px solid #000;
+  border-bottom-color: #6a5a3a;
+  border-right-color: #6a5a3a;
+  color: #ffd97a;
+  caret-color: #ffd97a;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  padding: 5px 6px;
+  outline: none;
+}
+/* The empty box says what it wants (src/charname.js#PLACEHOLDER): dim gold, quiet
+   enough not to be mistaken for a typed name and bright enough to read against
+   the well. Focus lights the bevel, because "click the box below" is the
+   screen's own instruction and the field has to answer the click. */
+.nameIface .nameEntryField::placeholder { color: #8a7a52; }
+.nameIface .nameEntryField:focus {
+  border-color: #a08a5a;
+  border-bottom-color: #c9b071;
+  border-right-color: #c9b071;
+}
+
+/* Everything the frame floats over the world is switched off while the welcome
+   screen is up: the orb cluster (the client's screen has no HUD on it at all),
+   and the corner counters, whose lines are the platform's rather than the
+   client's and which the screen would otherwise wear over the play button. A
+   class on the frame does it, the same class-driven way the chatbox's dialogue
+   switch works (.layer.chat.dialogopen above). */
+.frame.titleup .layer.overlay > .orb,
+.frame.titleup .layer.overlay > .levelups,
+.frame.titleup .layer.overlay > .xpDrops,
+.frame.titleup .layer.overlay > .counters { visibility: hidden; }
+
+/* A modal dialog dims the whole frame, and the dim is translucent - so the orb
+   cluster's bright numbers show through it and read as painted over the
+   dialog, and the corner counters do the same over Additional settings. The
+   frame carries `modalup` while any modal is open, which tucks them away until
+   it closes (the same class-driven way `titleup` does). */
+.frame.modalup .layer.overlay > .orb,
+.frame.modalup .layer.overlay > .counters { visibility: hidden; }
+
+/* One sprite out of src/sprites/ui/frame.png.
+
+   The `background-image` is deliberately NOT here: `gameframe.js#init` injects
+   it, because only JavaScript knows the bake's version. A literal url() in this
+   file is a *different cache key* from the versioned one the module loads its
+   <img> from, and the browser then fetched the whole 588 KB atlas twice — and
+   the two copies could be different generations of the file after a re-bake.
+   The injected rule carries the same absolute, versioned URL the <img> uses, so
+   there is one fetch and one generation in play, and a re-bake reaches the CSS
+   backgrounds as well as the image. See src/gameframe.js#_injectAtlasRule.
+
+   What stays here is everything that is not the URL: the tiling, and the two
+   pixelated declarations that keep the interface squares hard. */
+.spr, .tilebg {
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.spr { position: absolute; pointer-events: none; }
+
+/* ------------------------------------------------------------ minimap + compass */
+
+/* The map is drawn into a full 172x156 canvas but the client shows it through a
+   circular window, so the canvas is clipped to that circle; the frame ring (an
+   ornate border with a transparent hole) is a separate sprite above it, and the
+   compass goes on top of the ring. */
+#minimapCanvas { clip-path: circle(71px at 97px 80px); }
+#compassCanvas { z-index: 3; border-radius: 50%; }
+
+/* --------------------------------------------------------------- viewport */
+
+.viewport { overflow: hidden; background: #000; }
+.viewport canvas { position: absolute; left: 0; top: 0; display: block; }
+#gameCanvas { width: 512px; height: 334px; image-rendering: pixelated; }
+#fxLayer { width: 512px; height: 334px; pointer-events: none; image-rendering: pixelated; }
+
+/* ------------------------------------------------------------------- tabs */
+
+.tabrow { position: absolute; left: 0; top: 0; }
+.tabhit {
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+}
+
+.compasshit { cursor: pointer; }
+
+/* ------------------------------------------------------------- side panel */
+
+.side { overflow: hidden; background: transparent; }
+
+.sideScroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+}
+.sideScroll::-webkit-scrollbar { width: 0; height: 0; }
+
+/* Panels that place their children by hand are exactly one side panel tall;
+   everything else flows and therefore scrolls. */
+.panel { position: relative; width: 190px; }
+.panel.fixed { height: 261px; overflow: hidden; }
+
+/* The side panel's scrollbar: the client draws it in the right-hand 16px of
+   the panel, over the interface's right margin (the real tabs keep that strip
+   clear), so a scrolling panel's content is inset by those 16px. */
+.sidescroll { position: absolute; cursor: default; }
+.sideScroll.scrolling .panel { padding-right: 16px; }
+
+.note {
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+/* ------------------------------------------------------- item slots/grids */
+
+/* Interface 149, exactly: one 4x7 item widget at (16,8) whose pitch is
+   32 + the component's own padding - xPitch 10, yPitch 4 - so the slots stand
+   42px apart across and 36px down. The client blits the 32x32 item sprite at
+   the slot's own origin (no centring inset), so the icon sits flush at the
+   cell's top-left corner. */
+.invGrid {
+  position: absolute;
+  left: 16px;
+  top: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 42px);
+  grid-auto-rows: 36px;
+}
+.invGrid .slot { width: 42px; }
+.invGrid .slot > img { left: 0; top: 0; }
+.invGrid .slot .qty { top: 0; }
+.slot {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+.slot > img {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+.slot .qty {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #ffff00;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+.slot .price {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: #ffff00;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+.slot:hover { background-color: rgba(255, 255, 255, 0.12); }
+
+/* The stack being dragged between pack slots (src/ui.js#bindInvDrag): a copy of
+   its icon riding the cursor, and the slot it would land in. The ghost takes no
+   pointer events, so the hit test under it is always the slot it is over. */
+.dragGhost {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  opacity: 0.85;
+  z-index: 30;
+}
+.dragGhost > img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+.dragGhost .qty {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  color: #ffff00;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  text-shadow: 1px 1px 0 #000;
+}
+.invGrid .slot.dragOver { background-color: rgba(255, 255, 255, 0.24); }
+
+/* ----------------------------------------------------------- 0 combat panel */
+
+/* ---------------------------------------------- 0 combat panel (interface 92)
+   Geometry copied from the cache's own widgets: 70x46 style buttons in a 2x2
+   grid at x 20/104 and y 45/98, the style's icon in the top of the button, its
+   action name 30px down, and the auto-retaliate button across the bottom. Any
+   hand-placed sprite must be absolutely positioned - a bare .tilebg flows. */
+.styleBtn {
+  position: absolute;
+  cursor: pointer;
+}
+.styleBtn:hover { filter: brightness(1.25); }
+.styleIco { position: absolute; pointer-events: none; }
+.styleName {
+  position: absolute;
+  text-align: center;
+  color: #ff981f;
+  /* Interface 90's label widgets are font 494 (plain 11), 70x13, at y 66/101/136
+     (and 74/134 in the staff column), so the baseline is widget_y + 10 - 1: a
+     10px line box (line-height 11px, the client's own line step) plus the 1px
+     nudge pxText uses for this font. */
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 11px;
+  padding-top: 1px;
+  /* the client draws a text widget on one line and lets it run; it never wraps,
+     and an autocast spell's name is longer than the 70px box */
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Inside the 150x46 auto-retaliate button the label sits to the right of the
+   knight baked into the sprite, on two lines. That is a widget of its own -
+   font 495 (plain 12), (57,154) 112x42, so x 57..169 with baselines 166 and
+   178 - hence a 12px line box and the client's 12px line step. */
+.styleName.auto, .styleName.auto2 {
+  left: 36px;
+  right: 2px;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 12px;
+  padding-top: 2px;
+}
+.styleName.auto { top: 3px; }
+.styleName.auto2 { top: 15px; }
+
+/* The heading is interface 90's own two widgets: the weapon name in a 180x17
+   box at (4,4) centred on both axes, the combat level in a 180x12 box at (4,25)
+   below it. The name is the cache's quill 8 (font 497 - its fontHeight is 15, so
+   the widget is a 15px line box and the baseline is 4 + 15 - 1 = 18), the level
+   line is plain 11 (font 494) in the cache's #ff981f, shadowed. */
+.combatHead { position: absolute; left: 4px; top: 0; width: 180px; text-align: center; }
+/* both lines are hand-placed (4,4) and (4,25) by combatHeading(), so they have
+   to be absolutely positioned - a static child just flows and the offsets are
+   silently dropped. */
+.weaponName {
+  position: absolute;
+  left: 0;
+  color: #ff981f;
+  font-family: "rs-quill8", monospace;
+  font-size: 15px;
+  line-height: 15px;
+  /* the browser puts quill 8's baseline 11.2px below the line box top at this
+     size, and the client's own baseline is 19px below the widget (widget_y 4 +
+     fontHeight 15), so a 14px target needs this nudge */
+  padding-top: 2.8px;
+}
+.combatLvl {
+  position: absolute;
+  left: 0;
+  color: #ff981f;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 11px;
+  padding-top: 1px;
+  text-shadow: 1px 1px 0 #000000;
+}
+
+/* the special-attack bar is painted from the cache (bar sprite) with the wiki's
+   red-bed/green-fill energy meter and percentage caption, so only the hit area
+   is styled */
+.specBar { position: absolute; cursor: pointer; }
+/* the weapon category line under the bar: the heading's own orange plain-11 */
+.combatCat {
+  position: absolute;
+  text-align: center;
+  color: #ff981f;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 11px;
+  padding-top: 1px;
+  text-shadow: 1px 1px 0 #000000;
+  pointer-events: none;
+}
+
+/* --------------------------------------------- cache-accurate side panel bits */
+
+/* Every panel below is painted from the cache's own interface definitions, so
+   each element is absolutely placed on the coordinate the client uses. */
+.pxText {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  white-space: pre-line;
+  pointer-events: none;
+}
+.pxRect { position: absolute; pointer-events: none; }
+.pxText.nowrap { white-space: nowrap; }
+.pxHit { position: absolute; cursor: pointer; pointer-events: auto; }
+.pxTiled { position: absolute; overflow: hidden; pointer-events: none; }
+
+/* Interface 182's logout button: the stone tile brightens on hover exactly like
+   a combat style button, and its label turns red (keeping its shadow). The
+   label's colour is inline, so the hover rule needs the !important. */
+.logoutBtn { position: absolute; cursor: pointer; }
+.logoutBtn:hover { filter: brightness(1.25); }
+.logoutBtn .logoutLabel { color: #f7f0df; }
+.logoutBtn:hover .logoutLabel { color: #ff0000; }
+
+/* A 36x36 equipment slot: the ghost sprite is trimmed and re-centred by
+   pxSprite, exactly like the client's blit. */
+.pxSlot { position: absolute; width: 36px; height: 36px; cursor: default; }
+/* A walkable popup (interface 465) is pointer-transparent itself, so its slots
+   must take hits on their own - otherwise clicks fall through to the world
+   canvas underneath and answer with Walk-here. (Elsewhere the side panel's own
+   rule already covers them, so this changes nothing there.) */
+.iface .pxSlot, #fullIface .pxSlot { pointer-events: auto; }
+.pxSlot:hover { background-color: rgba(255, 255, 255, 0.12); }
+.pxSlot .slotGhost { opacity: 0.38; }
+/* A filled slot whose item is a stack - the ammo slot, since unit XXII - prints
+   its count in the tile's top-left corner, the client's own yellow, the same way
+   a pack stack does (.slot .qty above). */
+.pxSlot .qty {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #ffff00;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+
+/* The player's own character, standing in interface 465's model box (see
+   src/ui.js#placeDoll). It is a 2D canvas the renderer paints the live model
+   into; it can be dragged to spin the model, and nothing clickable sits under
+   it. */
+.equipDoll {
+  position: absolute;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: grab;
+  pointer-events: none;
+  touch-action: none;
+}
+.equipDoll:active { cursor: grabbing; }
+
+.panel .note { padding: 1px 6px; display: block; white-space: normal; overflow-wrap: break-word; }
+
+/* ------------------------------------------------------------ 7/8/9 lists */
+
+/* Interfaces 550/551's name window: widget 0 sits at (8,25) 158x194 in the
+   cache and the text widget inside it at (9,25) 155x100. The list scrolls, so
+   it takes the container's full height and the client's font (495 = plain12). */
+.nameList {
+  position: absolute;
+  left: 9px;
+  top: 27px;
+  width: 155px;
+  height: 192px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.nameList::-webkit-scrollbar { width: 0; }
+.nameRow {
+  display: flex;
+  justify-content: space-between;
+  height: 14px;
+  color: #00ff00;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  cursor: pointer;
+}
+.nameRow.offline { color: #ff0000; }
+/* The client's own prose rows (the channel line, the empty-list line) are
+   ordinary 12px text widgets that wrap, so these grow instead of clipping. */
+.nameRow.empty, .nameRow.info {
+  height: auto;
+  min-height: 14px;
+  white-space: normal;
+  cursor: default;
+  align-items: flex-start;
+}
+.nameRow.empty { color: #ffffff; }
+.nameRow.info { color: #ffff00; }
+.nameRow .nm { overflow: hidden; white-space: nowrap; }
+.nameRow .world { flex: 0 0 auto; padding-left: 4px; }
+
+/* ---------------------------------------------------- 7: the message board */
+
+/* The board's log (src/board.js is the data, src/ui.js#renderBoard the panel).
+   Nothing in an entry is selectable on purpose: this is a game frame, and a
+   drag that starts on a message and ends on the world is a drag the player
+   never meant - which is exactly why each entry carries its own copy button. */
+.bdFeed {
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  background: #241f1a;
+  border: 1px solid #000;
+  box-shadow: inset 0 0 0 1px #4a4238;
+  padding: 2px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bdFeed::-webkit-scrollbar { width: 0; }
+.bdEmpty {
+  color: #9a9a8a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+  padding: 3px 2px;
+}
+.bdMsg {
+  margin-bottom: 2px;
+  padding: 1px 2px 2px 2px;
+  background: #38311f;
+  border: 1px solid #14100c;
+}
+.bdMsg.mine { background: #443a2a; border-color: #6a5a3a; }
+.bdMsg .bdHead { display: flex; align-items: center; gap: 3px; }
+.bdMsg .bdName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+}
+.bdMsg.mine .bdName { color: #cfe09a; }
+.bdMsg.admin .bdName { color: #ff9933; }
+.bdMsg .bdTime {
+  flex: 0 0 auto;
+  color: #8a8578;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+}
+.bdMsg .bdCopy {
+  flex: 0 0 auto;
+  border: 1px solid #000;
+  background: #2b2620;
+  color: #cfc7b4;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  padding: 1px 3px;
+  cursor: pointer;
+}
+.bdMsg .bdCopy:hover { background: #6b6152; color: #fff; }
+.bdMsg .bdCopy.done { color: #7ee07e; }
+.bdMsg .bdCopy.bad { color: #ff8b82; }
+.bdMsg .bdText {
+  color: #ece5d4;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.bdMsg .bdText a { color: #9fc6e8; }
+.bdEmoji { height: 20px; max-width: 44px; vertical-align: middle; }
+/* the plugin's own "load more" button, restyled to sit at the top of the log */
+.bdMore {
+  border: 1px solid #000;
+  background: #2b2620;
+  color: #cfc7b4;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  padding: 1px 2px;
+  cursor: pointer;
+}
+.bdMore:hover { background: #6b6152; color: #fff; }
+
+/* the name line, the message line and the status line under the log */
+.bdNick { position: absolute; display: flex; align-items: center; gap: 3px; }
+.bdLabel {
+  flex: 0 0 auto;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+}
+.bdNickInput, .bdInput {
+  min-width: 0;
+  border: 1px solid #000;
+  background: #2b2620;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  padding: 1px 3px;
+  outline: none;
+}
+.bdNickInput:focus, .bdInput:focus { border-color: #6a5a3a; }
+.bdNickInput { flex: 1 1 auto; }
+.bdRow { position: absolute; display: flex; gap: 3px; }
+.bdInput { flex: 1 1 auto; }
+.bdPost {
+  flex: 0 0 auto;
+  border: 1px solid #000;
+  background: #3e3529;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  padding: 1px 7px;
+  cursor: pointer;
+}
+.bdPost:hover { background: #6b6152; color: #fff; }
+.bdStatus {
+  position: absolute;
+  color: #bdb5a2;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 11px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.bdStatus.bad { color: #ff8b82; }
+.bdStatus.wait { color: #ffd97a; }
+
+/* the "i" in the board's title line (our own pixel art - src/pixelart.js) */
+.bdInfo {
+  position: absolute;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+}
+.bdInfo:hover { filter: brightness(1.35); }
+
+/* the board's opening notice, in the modal layer */
+.bdNotice { max-width: 420px; }
+.bdNoticeHint { margin-top: 8px; color: #bdb5a2; }
+.bdCopyArea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 90px;
+  background: #2b2620;
+  border: 1px solid #000;
+  color: #ece5d4;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 15px;
+  padding: 4px;
+  outline: none;
+  resize: vertical;
+}
+
+/* The invisible comments box that owns the board's channel. It has to stay in
+   the document and inside the viewport - the plugin lazily mounts its iframe
+   through an IntersectionObserver - so it is a transparent, click-through box
+   in the top-left corner rather than a hidden one. */
+.boardHost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 300px;
+  height: 320px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+/* Writer mode's "::writer box": the same box, brought up over the game so the
+   writer can log into it (Ctrl+L) and use the plugin's own delete/ban buttons.
+   Only a class change, so the iframe is never moved or reloaded. */
+.boardHost.boardHostOpen {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 60;
+  border: 2px solid #6b6152;
+  background: #241f1a;
+  box-shadow: 0 0 0 2px #000, 0 8px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Writer mode's per-entry control (src/ui.js#boardTray) and a cleared entry in
+   the writer's own view. Everyone else never sees either. */
+.bdMsg .bdMod {
+  flex: 0 0 auto;
+  border: 1px solid #000;
+  background: #3a2b28;
+  color: #ffb3a7;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  padding: 1px 3px;
+  cursor: pointer;
+}
+.bdMsg .bdMod:hover { background: #6b3a32; color: #fff; }
+.bdMsg .bdMod.due { color: #ffd97a; }
+.bdMsg.cleared { opacity: 0.55; }
+.bdMsg.cleared .bdText { text-decoration: line-through; }
+.bdStatus.writer { color: #ff9933; }
+
+/* --------------------------------------------------------------- chatbox */
+
+.chatlog {
+  position: absolute;
+  overflow: hidden;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+}
+.chatlogInner {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  width: 100%;
+}
+.chatlog .line { min-height: 14px; padding-bottom: 1px; }
+.chatlog .sys,
+.chatlog .game,
+.chatlog .you { color: #000000; }
+.chatlog .warn { color: #800000; }
+/* The world's death announcement (src/deaths.js, src/net.js#netDeath). It shares
+   the red the client's own warnings use, because that is what it is - the one
+   line in the box that is about something that went badly for somebody - and
+   there is nothing in 2007's palette for "another player fell over". */
+.chatlog .death { color: #800000; }
+.chatlog .lvlup { color: #7e3200; }
+.chatlog .trade { color: #800080; }
+/* An interactive chat line (src/ui.js#chat with opts, the trade invitation):
+   a left click takes its action, so it reads as a link on hover. */
+.chatlog .line.chatlink:hover { text-decoration: underline; }
+.chatlog .other { color: #000000; }
+.chatlog .other b { color: #000000; font-weight: normal; }
+.chatlog .pub b { color: #000000; font-weight: normal; }
+.chatlog .pub { color: #0000ff; }
+.chatlog .me { color: #0000ff; }
+.chatlog .modbadge {
+  height: 12px;
+  width: auto;
+  margin-right: 2px;
+  vertical-align: -2px;
+}
+.chatlog span.modbadge {
+  display: inline-block;
+  background: #c9a227;
+  color: #000000;
+  font-size: 9px;
+  font-weight: bold;
+  height: auto;
+  padding: 0 3px;
+  border: 1px solid #7a6212;
+  border-radius: 2px;
+  vertical-align: 1px;
+}
+
+.chatname {
+  position: absolute;
+  color: #000;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  white-space: pre;
+  pointer-events: none;
+}
+.chatinput {
+  position: absolute;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  background: transparent;
+  color: #0000ff;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 12px;
+  caret-color: #000;
+  cursor: text;
+  /* The frame disables selection globally (html, body above) so that dragging
+     across the world never smears blue over the UI. An <input> inherits that,
+     and on mobile Safari/Chrome an unselectable input refuses to focus or to
+     hold a caret - the single biggest reason the chat line could not be typed
+     into on a phone. Give the chat line its own text selection back. */
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: none;
+}
+/* Phone keyboards: every one of them zooms the page in when a focused input's
+   font-size is under 16px - on a 12px chat line that would lurch the whole
+   window. 16px is the smallest size that suppresses the zoom, so the touch
+   build draws its chat line at 16px and scales it back down to 12px with a
+   transform (a transform does not count as a font-size, so the zoom stays
+   away). transform-origin is the left edge, so the line still starts at the
+   chatbox's own x=0 and only its text grows/shrinks in place; the element is
+   vertically centred in its 18px slot either way, so the baseline does not
+   move. Desktop keeps the plain 12px rule above. */
+body.touch .chatinput {
+  font-size: 16px;
+  line-height: 16px;
+  transform: scale(0.75);
+  transform-origin: left center;
+  top: 74px !important;
+  height: 22px !important;
+}
+/* The hint in the empty chat line (src/ui.js#CHAT_PLACEHOLDER). Dark enough to
+   actually be read against the chat parchment - the old #6b6152 was a 2.3:1
+   contrast, which vanished at this size - but still plainly a hint rather than
+   typed text, which the line prints in blue. */
+.chatinput::placeholder { color: #544d3e; }
+
+/* The retired in-chatbox split window (src/gameframe.js#setChatSplit keeps it
+   hidden): split private lines print above the chatbox now (.chatprivabove
+   below), in the client's cyan. */
+.chatpriv {
+  position: absolute;
+  overflow: hidden;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+}
+.chatprivInner {
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  width: 100%;
+}
+.chatpriv .line { min-height: 14px; }
+.chatpriv .line,
+.chatpriv .line b { color: #800000; font-weight: normal; }
+.chatprivRule { position: absolute; background: #9c8f73; }
+/* Split private chat's lines above the chatbox: the client's cyan, with a dark
+   shadow so they read over the game view. The box never takes pointer events,
+   so it cannot swallow clicks meant for the world behind it. */
+.chatprivabove {
+  position: absolute;
+  overflow: hidden;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  pointer-events: none;
+}
+.chatprivaboveInner {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+.chatprivabove .line { min-height: 14px; }
+.chatprivabove .line,
+.chatprivabove .line b { color: #00ffff; font-weight: normal; text-shadow: 1px 1px 0 #000; }
+/* Private chat in the *public* log, which is where it goes when split private
+   chat is off: the client's own private-chat colour, the sender's name set
+   before it the way a public line's is (src/ui.js#privateMessage). */
+.chatlog .priv,
+.chatlog .priv b { color: #800000; font-weight: normal; }
+/* The "Messaging <name>" line's little hello: one soft yellow wash fading out
+   over well under two seconds, then it sits as an ordinary game line
+   (src/ui.js#startPM). A background does the flashing because the line's own
+   text is baked onto the sharp-text canvas. */
+.chatlog .line.msgflash { animation: msgflash 1.4s ease-out; }
+@keyframes msgflash {
+  0% { background: rgba(255, 255, 0, 0.25); }
+  100% { background: transparent; }
+}
+
+.scrollbar { position: absolute; }
+/* The grip and its track are painted by the client's own routine
+   (src/gameframe.js#scrollbarGrip / paintGrip), so there is no scrollbar art to
+   style here beyond the two pixels a mitred inset bevel gets wrong. */
+.gripPatch { position: absolute; width: 1px; height: 1px; pointer-events: none; }
+
+.chatmode {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  cursor: pointer;
+  text-align: center;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+}
+.chatmode .cmLabel { position: absolute; left: 0; width: 124px; height: 12px; line-height: 12px; color: #fff; }
+.chatmode .cmMode { position: absolute; left: 0; width: 124px; height: 12px; line-height: 12px; }
+.chatmode:hover .cmLabel { color: #ffff00; }
+.chatenter { position: absolute; }
+
+/* The chatbox, taken over by a dialogue. It is the whole 479x96 box - not just
+   the 77px message window - because the client draws a chatbox interface over
+   the entire area, input line included: `drawChatArea` only reaches the input
+   line in its final `else` branch, so an open dialogue hides it. Both users of
+   this element place their own widgets inside it at the cache's coordinates:
+
+     * showChatDialog (the level-up "Click here to continue") centres its lines
+       on the whole 479px box, as the client does (drawCentredText(..., 239, ...));
+     * src/dialogue.js transcribes the dialogue interfaces 210-214, 228-238,
+       64-67 and 241-244 into it verbatim, so a component's y is its own. */
+.chatdialog {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 479px;
+  height: 96px;
+  /* Not clipped: the client draws an interface's children straight into its
+     pixel buffer, so a component that reaches past the chatbox - a level-up
+     interface's icon model, which is a 50-90px 3D render hung on a 32x32 anchor
+     (src/dialogue.js#renderLevelUp) - reaches past it there too. Every dialogue
+     component this file draws sits inside the box anyway. */
+  overflow: visible;
+  text-align: center;
+  cursor: pointer;
+}
+.chatdialog div {
+  position: absolute;
+  left: 0;
+  width: 479px;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+}
+.chatdialog div.cont { color: #000080; }
+.chatdialog input.amtInput {
+  position: absolute;
+  left: 0;
+  width: 479px;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  color: #000;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  text-align: center;
+  caret-color: #000;
+  cursor: text;
+}
+
+/* An open dialogue owns the whole chatbox: the message log, the "Name:" prefix
+   and the input line are all hidden underneath it, because the client draws
+   them only in the branch of drawChatArea that has no interface over the area
+   (see src/ui.js#setChatDialogOpen). Everything else in the chat layer is a
+   sibling of the dialogue box, so one rule hides the lot.
+
+   The exception is the sharp-text canvas (src/sharp.js), which is also a child
+   of the chat layer: it carries the *baked-font* pixels of everything still
+   visible in this layer, the dialogue's own lines included (the hidden elements
+   are simply not collected into it, because `runsUnder` skips a
+   `visibility:hidden` element). Hiding the canvas along with the elements took
+   the dialogue's text with it - the level-up and NPC conversations came out
+   blank (2026-09-20). */
+.layer.chat.dialogopen > *:not(#chatDialog):not(.sharpLayer) { visibility: hidden; }
+
+/* The dialogue's own two components (src/dialogue.js). The head is a 32x32
+   canvas the renderer paints into, exactly like the paper-doll, so it needs the
+   same pixel-exact scaling and nothing else; it never takes the pointer, since
+   a click on the head is a click on the chatbox. The bar is the cache's own
+   hidden wide twin of the option list's sword bar, present only so that the
+   pointer over it can swing the two swords out to the edges of the chatbox. */
+.dlgHead {
+  position: absolute;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+/* A level-up interface's icon: the same kind of canvas as the head, centred on
+   its own 32x32 model widget (src/dialogue.js#renderLevelUp). */
+.dlgIcon {
+  position: absolute;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+.dlgBarHit { position: absolute; }
+
+/* ------------------------------------------------------------------ orbs */
+
+/* The three orb buttons (hitpoints / prayer / run energy) sit along the left of
+   the minimap. Nothing is drawn by CSS: the stone ring, the number plate, the
+   orb's dark interior, the coloured fill and the icon are all genuine client
+   sprites out of the interface atlas, and the geometry comes from the cache's
+   interface 548 (frame.json's `orbs`). The only job left for CSS is the clip
+   window the fill is drawn inside, so a partially-filled orb shows the empty
+   sphere above the fill line. */
+.orb { position: absolute; }
+.orbWin { position: absolute; overflow: hidden; }
+/* the fill is a 26x26 orb sprite that slides down inside the window; the window
+   clips it to the current level. 231/256 is the client's own alpha for these
+   sprites (interface opacity 25, drawn at 256 - opacity). */
+.orbFill { opacity: 0.902; }
+/* the value, on the stone plate: plain 11, yellow, black shadow, centred in the
+   component's 23x13 box exactly as the cache's text component specifies */
+.orbText {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1px;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 10px;
+  color: #ffff00;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------- xp drops */
+
+/* The drop column: every toast is hung at the same y (the run energy icon's own
+   level - the y is written per toast by src/ui.js#addXpDrop, because it comes
+   from the frame's baked orb geometry) and pushes itself up one line per tick.
+   So the container is not a stack: it has no layout of its own, no padding and
+   no clipping - a toast rising above the anchor must not be cut off - and each
+   child is taken out of flow and pinned to the viewport's right edge. */
+.xpDrops {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+/* The toast is deliberately just the icon and the number over the world: no
+   panel, no border, no skill name (the icon is what names the skill), which is
+   the modern client's own drop. Everything that moves - the appearance, the
+   climb, the removal - is driven from src/ui.js#fadeXpToasts, never from CSS
+   (a CSS animation does not advance in the preview iframe; see
+   src/README.md). */
+.xpDrop {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  display: flex;
+  align-items: center;
+}
+.xpDrop .xpPlate {
+  flex: 0 0 auto;
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* --------------------------------------------------------------- hover tip */
+
+.hovertip {
+  position: absolute;
+  left: 10px;
+  top: 16px;
+  pointer-events: none;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  color: #ffffff;
+  /* The whole tip is drawn white at 80% alpha. The alpha lives on the container
+     rather than on each line so that the coloured `<col=rrggbb>` runs inside a
+     tip (orange names, red requirements, green "can cast") are dimmed by exactly
+     the same amount as the plain white text - a child's own opacity multiplies
+     with its parent's. */
+  opacity: 0.8;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+.hovertip .tipMain {
+  font-family: "rs-plain12", monospace;
+}
+.hovertip .sub {
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ffffff;
+}
+/* The coloured runs keep their own colour; the container's 0.8 alpha is what
+   dims them, so no line jumps to full brightness. */
+.hovertip span {
+  opacity: 1;
+}
+/* The hover text is static and quiet: it appears at this fixed spot and stays
+   there - no glow or pulse. Regular weight rather than bold, white at 80%
+   alpha. */
+
+/* The stats tab's hover box: the client's own yellow tooltip (0xffffa0), drawn
+   inside the side panel under (or over, on the bottom row) the hovered skill -
+   black label/value rows on yellow, the box exactly as wide as its longest row.
+   It is a panel child rather than the shared top-left tip, so it sits right at
+   the levels the way the client's does. z-index 5 paints it in front of the
+   level numbers and the tile hit boxes; pointer-events none, so the box itself
+   can never steal the hover that opened it. */
+.skillTipBox {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: max-content;
+  max-width: 186px;
+  background: #ffffa0;
+  border: 1px solid #000000;
+  color: #000000;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+  padding: 3px 5px;
+  pointer-events: none;
+}
+.skillTipBox .tipRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.skillTipBox .tipRow .k {
+  text-align: left;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+.skillTipBox .tipRow .v {
+  text-align: right;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* ---------------------------------------------------------- context menu */
+
+/* The client's drawMenu(): a 0x5d5447 box of width maxText+8 and height
+   15*rows+22, a black 16px title bar inset by 1px, a 1px black outline around
+   the item area, the "Choose Option" title in the *bold* font at (3, baseline
+   14) in the menu's own colour, and the items in the bold font, x=3, with the
+   default action on the top row (actionY = 31 + row*15). */
+.ctxmenu {
+  position: absolute;
+  /* The client draws the menu last of all, over every interface - and it must
+     here too. Without a z-index the menu is a zero-stacking sibling of
+     #fullIface (z-index 30) and painted *underneath* the bank/shop window, so
+     right-clicking a bank item looked like it did nothing at all. 40 sits above
+     the full interfaces (30) and the modal layer (auto) but below the loading
+     screen (50). */
+  z-index: 40;
+  padding: 19px 0 3px;
+  background: #5d5447;
+}
+.ctxmenu::after {
+  content: "";
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: 18px;
+  /* The client's drawUnfilledRectangle runs from y=18 for height-19 rows, so the
+     bottom black line sits one row above the menu's last row of brown. */
+  bottom: 1px;
+  border: 1px solid #000;
+  pointer-events: none;
+}
+.ctxmenu .cHead {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  right: 1px;
+  height: 16px;
+  background: #000;
+  color: #5d5447;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  line-height: 16px;
+  /* The client draws the title with drawText() - no shadow - at baseline
+     menu_y + 14, i.e. ink rows 5..14 inside the black bar. Half-leading here is
+     (16 - (11+5))/2 = 0, so the browser's baseline lands at padTop + 11: the
+     padding that puts it at 14 is 2px. */
+  padding: 2px 0 0 3px;
+  text-shadow: none;
+  white-space: pre;
+}
+.ctxmenu .mi {
+  height: 15px;
+  /* Items are drawn with drawTextWithPotentialShadow(): a 1px black shadow, and
+     the client's baseline is menu_y + 31 + row*15. Line-height 18 gives
+     half-leading 1, so the baseline falls at rowTop + 12 = 31 for the top row -
+     every row after that is exactly 15px lower, as in the client. */
+  line-height: 18px;
+  padding: 0 3px;
+  color: #fff;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  text-shadow: 1px 1px 0 #000;
+  white-space: pre;
+  cursor: pointer;
+}
+.ctxmenu .mi:hover { color: #ffff00; }
+.ctxmenu .mi.disabled { color: #8a8172; cursor: default; }
+.ctxmenu .mi.disabled:hover { color: #8a8172; }
+
+/* ----------------------------------------------------------- view/online */
+
+/* The counters are the quietest thing on screen: two right-justified lines of
+   the client's own small font, white with a hard 1px shadow, sitting in the
+   bottom-right of the game viewport. No box, no backing - so a busy scene
+   behind them is still the first thing you notice. */
+.counters {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0 6px 4px 0;
+  pointer-events: none;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 13px;
+  color: #ffffff;
+  opacity: 0.85;
+  text-shadow: 1px 1px 0 #000;
+}
+.counters span { white-space: pre; }
+.counters span:empty { display: none; }
+
+/* The minigame timer (src/minigame.js): the counters' own voice - the
+   client's small font, white with a hard 1px shadow, no box, no backing -
+   pinned to the bottom-left of the game viewport instead of the right. */
+.mgTimer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 0 0 4px 6px;
+  pointer-events: none;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 13px;
+  color: #ffffff;
+  opacity: 0.85;
+  text-shadow: 1px 1px 0 #000;
+  white-space: pre;
+}
+.mgTimer[hidden] { display: none; }
+
+/* The performance read-out (`::fps`, and the numbers `::perf` prints once).
+   Not cache art: it is this build's own measuring tool, so it is deliberately
+   plain - the client's small font on a translucent plate in the top-left of the
+   viewport, out of the way of the counters and the hover tip. Hidden unless the
+   player asks for it. */
+.perfBox {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  padding: 2px 5px;
+  pointer-events: none;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  white-space: pre;
+  color: #e8e8e8;
+  background: rgba(0, 0, 0, 0.55);
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* --------------------------------------------------------------- level ups */
+.levelups {
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  width: 765px;
+  text-align: center;
+  pointer-events: none;
+}
+.levelups .lvlup {
+  color: #fff;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  line-height: 14px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* ----------------------------------------------------------------- modals */
+
+/* Popup window conventions (standing - every production popup follows these):
+   a popup seats INSIDE the game viewer like the bank-type windows (left:12 /
+   top:20, 488x305, shading nothing behind it), never screen-centred (the
+   modal layer spans the whole window, so screen-centring drifts over the side
+   panel); scrollbars wear the bank colours (track #23201b, grip #4d4233,
+   highlight #766654, lowlight #332d25); titles are Title Case, column headers
+   Capitalised, the records footer reads "Personal Best:"; record tables span
+   the box's whole width; record times show whole seconds. */
+.modallayer { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 20; }
+/* The smithing screen is a bank-type window, not a popup: it shades nothing
+   behind it (clicking outside still closes it, through the layer's own
+   pointer handler in src/ui.js). */
+.modallayer:has(> .smithBox) { background: none; }
+/* The dungeon-run records table (src/minigame.js#openMgBoard): the crafting
+   production popup's own seat and size (in the viewer, like every other
+   production window - see the conventions above), centred orange title bar
+   with an X, no footer, vertically centred content - with no make buttons: a
+   scrolling table of all twenty places with "-" wherever a place is empty.
+   The scroll box wears the bank's scrollbar colours (the bank bar itself is
+   gameframe-drawn, so this is the native bar in the same dress). The table
+   spans the box's whole width, one third a column. */
+.modalbox.mgBoardBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; display: flex; flex-direction: column; }
+.modalbox.mgBoardBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.mgBoardBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modalbox.mgBoardBox .modalActions { display: none; }
+.modallayer:has(> .mgBoardBox) { background: none; }
+.mgBoardBox .smithX { color: #ff981f; }
+.mgBoardWrap { margin: auto 0; text-align: center; }
+.mgBoardScroll { max-height: 200px; overflow-y: auto; margin: 2px auto 6px; scrollbar-width: thin; scrollbar-color: #4d4233 #23201b; }
+.mgBoardScroll::-webkit-scrollbar { width: 16px; }
+.mgBoardScroll::-webkit-scrollbar-track { background: #23201b; }
+.mgBoardScroll::-webkit-scrollbar-thumb { background: #4d4233; box-shadow: inset 2px 2px 0 #766654, inset -2px -2px 0 #332d25; }
+/* The bank/chatbox bar's arrow buttons, in the same colours: highlight
+   triangles on the track. (That bar itself is gameframe-drawn and cannot
+   mount inside a DOM modal, so this is the native bar in its exact dress.) */
+.mgBoardScroll::-webkit-scrollbar-button:single-button { display: block; height: 16px; background: #23201b; border-style: solid; }
+.mgBoardScroll::-webkit-scrollbar-button:single-button:vertical:decrement { border-width: 0 6px 7px 6px; border-color: transparent transparent #766654 transparent; }
+.mgBoardScroll::-webkit-scrollbar-button:single-button:vertical:increment { border-width: 7px 6px 0 6px; border-color: #766654 transparent transparent transparent; }
+.mgBoardScroll::-webkit-scrollbar-button:single-button:hover:vertical:decrement { border-bottom-color: #fff; }
+.mgBoardScroll::-webkit-scrollbar-button:single-button:hover:vertical:increment { border-top-color: #fff; }
+.mgBoardTable { width: 100%; margin: 0 auto; border-collapse: collapse; table-layout: fixed; }
+.mgBoardTable th, .mgBoardTable td { padding: 1px 4px; text-align: center; white-space: nowrap; }
+.mgBoardTable th { color: #ffd97a; font-weight: normal; }
+.modalbox {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 320px;
+  max-width: 620px;
+  max-height: 420px;
+  overflow: hidden;
+  background: #5d5447;
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px #8a8172;
+  color: #fff;
+  padding-bottom: 26px;
+}
+.modalbox .cHead {
+  height: 18px;
+  background: #000;
+  color: #5d5447;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  line-height: 18px;
+  padding-left: 4px;
+}
+.modalbox .modalBody {
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  line-height: 15px;
+  padding: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.modalbox .modalBody::-webkit-scrollbar { width: 0; }
+.modalbox .modalRow { display: flex; align-items: center; gap: 4px; }
+.modalbox .modalRow .nm { color: #ffd97a; }
+
+/* The anvil smithing screen (src/actions.js#openSmithMenu): the client's own
+   "What would you like to make?" - six columns of item rows in wiki places,
+   each with its icon, white name, green bar cost and the yellow make-count
+   where one bar makes several, plus the stone 1 / 5 / 10 / X / All buttons
+   down the right side, the set one showing white. Rows below the level or
+   short on bars show greyed with the reason as their tooltip. The footer
+   Close is hidden - the client's own screen closes from the X in its title
+   bar. The box is the bank window's own size and seat (BANK_WIN x12/y20/w488/
+   h305 in frame squares): over the 3D view, clear of the side panel and the
+   chatbox, shading nothing behind it. Icons are the inventory's own 32x32,
+   and the make-count overlays the icon's top-left the way a bank slot's own
+   count does, so the rows fit the bank's height. Two rules every production
+   window of this shape follows (the glass screen already does): the body is a
+   flex column and the wrap carries `margin: auto 0`, so whatever number of
+   rows exists sits vertically centred - a short grid never hugs the title bar;
+   and a grid taller than the body scrolls (the body's own overflow) with its
+   scroll position persisted per window in the world's storage
+   (src/actions.js#persistScroll), so it survives closing and logging out. */
+.modalbox.smithBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; }
+.modalbox.smithBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.smithBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; }
+.modalbox.smithBox .modalActions { display: none; }
+.smithX { position: absolute; right: 2px; top: 1px; width: 16px; height: 16px; border: 1px solid #000; background: #494137; font-family: "rs-bold12", monospace; font-size: 11px; line-height: 14px; padding: 0; cursor: pointer; }
+.smithBox .smithX { color: #ff981f; }
+.smithWrap { display: flex; gap: 8px; margin: auto 0; }
+.smithGrid { display: grid; grid-template-columns: repeat(4, 103px); gap: 0 2px; }
+/* A short grid stretches to its wrap and deals its free space evenly: with the
+   row gap at 0 the outer margins come out exactly equal to the distance
+   between rows. Applied from code (src/actions.js#fitGridRows) only when the
+   rows fit - a taller grid keeps normal flow and scrolls instead. */
+.smithGrid.short { align-content: space-evenly; }
+.smithCell { position: relative; text-align: center; padding: 0; cursor: pointer; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 11px; text-shadow: 1px 1px 0 #000; }
+.smithCell.empty { cursor: default; }
+.smithCell:not(.empty):not(.dim):hover img.smithIcon { filter: brightness(1.35); }
+.smithIconWrap { position: relative; width: 32px; margin: 0 auto; }
+.smithIconWrap .smithQty { position: absolute; left: 0; top: 0; color: #ffff00; font-family: "rs-plain11", monospace; font-size: 10px; line-height: 10px; text-shadow: 1px 1px 0 #000; pointer-events: none; }
+.smithCell img.smithIcon { display: block; margin: 0; width: 32px; height: 32px; image-rendering: pixelated; }
+.smithCell .smithName { color: #fff; white-space: nowrap; font-family: "rs-plain11", monospace; font-size: 10px; }
+.smithCell .smithBars { color: #00ff00; font-family: "rs-plain11", monospace; font-size: 10px; }
+.smithCell .smithBars.need { color: #ff0000; }
+.smithCell.dim { opacity: 0.45; cursor: default; }
+.smithSide { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.smithBtn { width: 42px; height: 42px; border: 2px outset #6a6355; background: #494137; font-family: "rs-bold12", monospace; font-size: 12px; cursor: pointer; text-shadow: 1px 1px 0 #000; box-shadow: inset 0 0 0 1px #000; }
+/* The selectors carry their parents' classes because the platform's own sheet
+   sets `color: inherit` on every enabled button (specificity 0-1-1, which a
+   bare class does not beat - see the name step's field above for the same
+   fight). Without this the set button's white never wins. */
+.smithSide .smithBtn { color: #ff981f; }
+.smithSide .smithBtn:hover { background: #5a5145; color: #fff; }
+.smithSide .smithBtn.sel { color: #fff; }
+
+/* The glassblowing screen (src/actions.js#openGlassMenu): the anvil screen's
+   twin - the same bank-type window, seat and size, with the molten-glass rows
+   in its grid and the same stone 1 / 5 / 10 / X / All buttons down the right
+   side. Eight rows in two rows of four, large icons, the grid distributed and
+   centred both ways with edge padding equal to the gaps. */
+.modallayer:has(> .glassBox) { background: none; }
+.modalbox.glassBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; display: flex; flex-direction: column; }
+.modalbox.glassBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.glassBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modalbox.glassBox .modalActions { display: none; }
+.glassX { position: absolute; right: 2px; top: 1px; width: 16px; height: 16px; border: 1px solid #000; background: #494137; font-family: "rs-bold12", monospace; font-size: 11px; line-height: 14px; padding: 0; cursor: pointer; }
+.glassBox .glassX { color: #ff981f; }
+.glassWrap { display: flex; gap: 8px; flex: 1; min-height: 0; }
+.glassGrid { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-evenly; flex: 1; min-height: 0; }
+.glassGrid.short { align-content: space-evenly; }
+.glassCell { position: relative; text-align: center; padding: 4px 0; max-width: 132px; cursor: pointer; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 14px; text-shadow: 1px 1px 0 #000; }
+.glassCell.empty { cursor: default; }
+.glassCell:not(.empty):not(.dim):hover img.glassIcon { filter: brightness(1.35); }
+.glassIconWrap { position: relative; width: 56px; margin: 0 auto; }
+.glassCell img.glassIcon { display: block; margin: 0; width: 56px; height: 56px; image-rendering: pixelated; }
+.glassCell .glassName { color: #fff; white-space: nowrap; font-family: "rs-plain11", monospace; font-size: 10px; }
+.glassCell .glassCost { color: #00ff00; font-family: "rs-plain11", monospace; font-size: 10px; }
+.glassCell .glassCost.need { color: #ff0000; }
+.glassCell.dim { opacity: 0.45; cursor: default; }
+.glassSide { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.glassBtn { width: 42px; height: 42px; border: 2px outset #6a6355; background: #494137; font-family: "rs-bold12", monospace; font-size: 12px; cursor: pointer; text-shadow: 1px 1px 0 #000; box-shadow: inset 0 0 0 1px #000; }
+.glassSide .glassBtn { color: #ff981f; }
+.glassSide .glassBtn:hover { background: #5a5145; color: #fff; }
+.glassSide .glassBtn.sel { color: #fff; }
+.modallayer:has(> .jewelBox) { background: none; }
+.modalbox.jewelBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; display: flex; flex-direction: column; }
+.modalbox.jewelBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.jewelBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modalbox.jewelBox .modalActions { display: none; }
+.jewelX { position: absolute; right: 2px; top: 1px; width: 16px; height: 16px; border: 1px solid #000; background: #494137; font-family: "rs-bold12", monospace; font-size: 11px; line-height: 14px; padding: 0; cursor: pointer; }
+.jewelBox .jewelX { color: #ff981f; }
+.jewelWrap { display: flex; gap: 8px; flex: 1; min-height: 0; }
+.jewelGrid { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-evenly; flex: 1; min-height: 0; }
+.jewelGrid.short { align-content: space-evenly; }
+.jewelCell { position: relative; text-align: center; padding: 4px 0; max-width: 132px; cursor: pointer; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 14px; text-shadow: 1px 1px 0 #000; }
+.jewelCell.empty { cursor: default; }
+.jewelCell:not(.empty):not(.dim):hover img.jewelIcon { filter: brightness(1.35); }
+.jewelIconWrap { position: relative; width: 56px; margin: 0 auto; }
+.jewelIconWrap .jewelQty { position: absolute; left: 2px; top: 0; color: #ffff00; font-family: "rs-plain11", monospace; font-size: 10px; line-height: 10px; text-shadow: 1px 1px 0 #000; pointer-events: none; }
+.jewelCell img.jewelIcon { display: block; margin: 0; width: 56px; height: 56px; image-rendering: pixelated; }
+.jewelCell .jewelName { color: #fff; font-family: "rs-plain11", monospace; font-size: 10px; }
+.jewelCell .jewelCost { color: #00ff00; font-family: "rs-plain11", monospace; font-size: 10px; }
+.jewelCell .jewelCost.need { color: #ff0000; }
+.jewelCell.dim { opacity: 0.45; cursor: default; }
+.jewelSide { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.jewelBtn { width: 42px; height: 42px; border: 2px outset #6a6355; background: #494137; font-family: "rs-bold12", monospace; font-size: 12px; cursor: pointer; text-shadow: 1px 1px 0 #000; box-shadow: inset 0 0 0 1px #000; }
+.jewelSide .jewelBtn { color: #ff981f; }
+.jewelSide .jewelBtn:hover { background: #5a5145; color: #fff; }
+.jewelSide .jewelBtn.sel { color: #fff; }
+
+/* The tanner's window (src/actions.js#openTanMenu): the live game's own
+   tanning interface - the same bank-type window, seat and
+   size, "What would you like tanned?" in the title bar with the X to
+   close it, and eight cells in two rows of four (soft, hard, swamp
+   snakeskin, snakeskin, the four dragon leathers). Each cell carries the
+   leather's own large icon with its name and fee beneath, cyan while the
+   coins cover even one hide and the interface's own red while they don't. */
+.modallayer:has(> .tanBox) { background: none; }
+.modalbox.tanBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; display: flex; flex-direction: column; }
+.modalbox.tanBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.tanBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modalbox.tanBox .modalActions { display: none; }
+.tanX { position: absolute; right: 2px; top: 1px; width: 16px; height: 16px; border: 1px solid #000; background: #494137; font-family: "rs-bold12", monospace; font-size: 11px; line-height: 14px; padding: 0; cursor: pointer; }
+.tanBox .tanX { color: #ff981f; }
+.tanWrap { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.tanGrid { display: grid; grid-template-columns: repeat(4, 1fr); flex: 1; min-height: 0; }
+/* A short grid stretches to its wrap and deals its free space evenly: the top
+   margin, the bottom margin and the distance between the rows all come out
+   equal. Applied from code (src/actions.js#fitGridRows) only when the rows
+   fit - a taller grid keeps normal flow and scrolls instead. */
+.tanGrid.short { align-content: space-evenly; }
+.tanCell { text-align: center; padding: 4px 0; cursor: pointer; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 14px; text-shadow: 1px 1px 0 #000; }
+.tanCell img.tanIcon { display: block; margin: 0 auto 2px; width: 56px; height: 56px; image-rendering: pixelated; }
+.tanCell.ok:hover img.tanIcon { filter: brightness(1.35); }
+.tanCell.ok .tanName, .tanCell.ok .tanFee { color: #00ffff; }
+.tanCell.short .tanName, .tanCell.short .tanFee { color: #ff0000; }
+/* Thormac's counter (src/ui.js#renderThormac): the tanner's cells in the
+   riveted window - six large staff icons in three columns, dealt evenly down
+   the single screen, with the held count riding the icon's corner. */
+.thormacGrid { display: grid; grid-template-columns: repeat(3, 1fr); align-content: space-evenly; height: 100%; }
+.thormacGrid .tanCell { position: relative; height: 109px; padding: 0; }
+.thormacGrid .tanCell img.tanIcon { width: 109px; height: 109px; margin: 0 auto; }
+.thormacCap { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; }
+.thormacCap .tanName, .thormacCap .tanFee { line-height: 14px; }
+.thormacHave { position: absolute; top: 2px; right: 10px; font-family: "rs-plain11", monospace; font-size: 11px; color: #ffff00; text-shadow: 1px 1px 0 #000; }
+/* The tanner's counter (src/ui.js#renderTanCounter): Thormac's riveted shell
+   with the tanning list's own eight cells - four columns by two rows of large
+   icons, name + fee caption stacked underneath, red without the hide, cyan
+   short on coins, green when the batch can go. */
+.tanCounterGrid { display: grid; grid-template-columns: repeat(4, 1fr); align-content: space-evenly; height: 100%; }
+.tanCounterGrid .tanCell { position: relative; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tanCounterGrid .tanCell img.tanIcon { width: 92px; height: 92px; display: block; }
+.tanCounterCap { text-align: center; margin-top: -6px; }
+.tanCounterCap .tanName, .tanCounterCap .tanFee { line-height: 13px; }
+.tanCounterGrid .tanCell.ready .tanName, .tanCounterGrid .tanCell.ready .tanFee { color: #00ff00; }
+.tanCounterGrid .tanCell:hover img.tanIcon { filter: brightness(1.35); }
+
+/* The production leather-crafting window
+   (src/actions.js#openProductionCraftMenu), starting with green dragonhide:
+   the anvil screen's twin at the same seat and size - the product's own large
+   icons in the grid, the stone 1 / 5 / 10 / X / All buttons down the right,
+   the makeable count over each icon, the material cost green/red beneath. */
+.modallayer:has(> .craftBox) { background: none; }
+.modalbox.craftBox { width: 488px; height: 305px; max-width: none; max-height: none; padding-bottom: 0; background: #484034; left: 12px; top: 20px; transform: none; display: flex; flex-direction: column; }
+.modalbox.craftBox .cHead { position: relative; color: #ff981f; text-align: center; background: #443b30; }
+.modalbox.craftBox .modalBody { max-height: none; padding: 6px 8px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.modalbox.craftBox .modalActions { display: none; }
+.craftX { position: absolute; right: 2px; top: 1px; width: 16px; height: 16px; border: 1px solid #000; background: #494137; font-family: "rs-bold12", monospace; font-size: 11px; line-height: 14px; padding: 0; cursor: pointer; }
+.craftBox .craftX { color: #ff981f; }
+.craftWrap { display: flex; gap: 8px; flex: 1; min-height: 0; }
+.craftGrid { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-evenly; flex: 1; min-height: 0; }
+.craftGrid.short { align-content: space-evenly; }
+.craftCell { position: relative; text-align: center; padding: 4px 0; max-width: 132px; cursor: pointer; font-family: "rs-plain12", monospace; font-size: 12px; line-height: 14px; text-shadow: 1px 1px 0 #000; }
+.craftCell.empty { cursor: default; }
+.craftCell:not(.empty):hover img.craftIcon { filter: brightness(1.35); }
+.craftIconWrap { position: relative; width: 56px; margin: 0 auto; }
+.craftIconWrap .craftQty { position: absolute; left: 2px; top: 0; color: #ffff00; font-family: "rs-plain11", monospace; font-size: 10px; line-height: 10px; text-shadow: 1px 1px 0 #000; pointer-events: none; }
+.craftCell img.craftIcon { display: block; margin: 0 auto 2px; width: 56px; height: 56px; image-rendering: pixelated; }
+.craftCell .craftName { color: #fff; font-family: "rs-plain11", monospace; font-size: 11px; }
+.craftCell .craftCost.ok { color: #00ff00; font-family: "rs-plain11", monospace; font-size: 10px; }
+.craftCell .craftCost.need { color: #ff0000; font-family: "rs-plain11", monospace; font-size: 10px; }
+.craftSide { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.craftBtn { width: 42px; height: 42px; border: 2px outset #6a6355; background: #494137; font-family: "rs-bold12", monospace; font-size: 12px; cursor: pointer; text-shadow: 1px 1px 0 #000; box-shadow: inset 0 0 0 1px #000; }
+/* The selectors carry their parents' classes because the platform's own sheet
+   sets `color: inherit` on every enabled button (specificity 0-1-1, which a
+   bare class does not beat). Without this the set button's white never wins. */
+.craftSide .craftBtn { color: #ff981f; }
+.craftSide .craftBtn:hover { background: #5a5145; color: #fff; }
+.craftSide .craftBtn.sel { color: #fff; }
+
+/* The commands box (src/ui.js#openCommandsPopup). A heading per section, then
+   one row per command: the command itself in the client's bold12 on the left,
+   what it does in plain12 beside it. The command column is a fixed width so all
+   the descriptions start on the same edge and the list can be read straight
+   down the colons. */
+.modalbox .cmdIntro { margin-bottom: 6px; color: #d8d2c4; }
+/* The commands list is a fixed-width box of its own: the description column has
+   to be wide enough that a sentence stays on one line, or the list is twice as
+   tall as it needs to be and has to be scrolled. */
+.modalbox.cmdBox { width: 560px; }.modalbox .cmdTitle { margin: 8px 0 3px; color: #ffd97a; font-family: "rs-bold12", monospace; }
+.modalbox .cmdRow { display: flex; gap: 8px; margin-bottom: 3px; }
+.modalbox .cmdRow .cmd { flex: 0 0 152px; color: #fff; font-family: "rs-bold12", monospace; }
+.modalbox .cmdRow .cmdDesc { flex: 1 1 auto; color: #d8d2c4; }
+.modalbox .cmdOthers { color: #d8d2c4; }
+.modalbox .cmdHint { margin-top: 8px; color: #bdb5a2; }
+
+/* The account panel's own parts (src/ui.js#openAccountPanel): the two text
+   fields, the status line under them and the list of players online. The fields
+   are the client's own input look - a dark well with a thin border, the same
+   colours the chatbox input uses. */
+.rs-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #2b2620;
+  border: 1px solid #000;
+  color: #ffd97a;
+  font-family: "rs-plain12", monospace;
+  font-size: 12px;
+  padding: 2px 4px;
+  outline: none;
+}
+.rs-field:focus { border-color: #6a5a3a; }
+body.touch .rs-field { font-size: 16px; padding: 6px 8px; }
+body.touch .titleauth .rs-btn { padding: 10px 22px; }
+.acctStatus { margin-top: 6px; color: #e8e0d0; }
+.acctRoster { margin-top: 4px; color: #9a9a8a; }
+.modalActions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.rs-btn {
+  border: 1px solid #000;
+  background: #3e3529;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.rs-btn:hover { background: #6b6152; color: #fff; }
+.rs-btn:disabled { color: #7a7466; cursor: default; }
+.rs-btn.wide { display: block; width: 100%; margin-bottom: 2px; }
+
+/* ============================================================ full interfaces */
+
+#fullIface {
+  position: absolute;
+  z-index: 30;
+}
+.iface {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  color: #ffd97a;
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+/* A non-walkable interface swallows clicks aimed at the game view (the client
+   only lets you walk around while a walkable one is open) - but nothing more:
+   the side panel and the chatbox stay usable, as they do in the client. */
+.ifaceBlock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 512px;
+  height: 334px;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------------- bank */
+
+/* The bank window is interface 12 of the cache, drawn at its own frame
+   coordinates (12,20)-(500,325) - a 488x305 riveted iron box. Its children
+   are all placed by renderBank(), so this only floats it and gives the item
+   list and the scrollbar their own contexts. */
+.bankWin { position: absolute; pointer-events: auto; }
+.bankList { position: absolute; overflow: hidden; }
+.bankListInner { position: absolute; }
+.bankBar { position: absolute; cursor: pointer; }
+/* The seamless plate backing (src/ui.js#plateBacking): one element repeating a
+   single plate cell behind the tiled wall, so fractional scales cannot seam it.
+   It takes no pointer (the plates' own hit boxes sit above it). */
+.plateBack { position: absolute; background-repeat: repeat; image-rendering: pixelated; image-rendering: crisp-edges; pointer-events: none; }
+
+/* A bank or shop item: the same 36x36 cell as an inventory slot but with no
+   slot backdrop - items sit straight on the interface's plates. Hovering
+   brightens the icon, the way the client redraws the hovered item with alpha. */
+.bankSlot, .shopSlot { position: absolute; cursor: pointer; }
+.bankSlot:hover, .shopSlot:hover { background: none; }
+.bankSlot:hover > img, .shopSlot:hover > img { filter: brightness(1.5); }
+/* The count rides the slot, and the slot is placed two pixels up and left of the
+   cache's own cell so its 2px-inset icon lands on the cell - which put the first
+   row's digits half a pixel above the list's clip line, shaving the tops off
+   every number on the top row. The count moves to the icon's own top-left
+   corner (the inventory's rule: icon origin + 1px down), which is inside the
+   cell's 3px of headroom. */
+.bankSlot .qty { left: 2px; top: 3px; }
+
+/* the walkable-interface layer: no backdrop and no pointer capture, so the game
+   view, the minimap, the side panel and the chatbox stay visible - and usable -
+   around the bank window */
+.layer.overlay > #fullIface.float { background: none; box-shadow: none; pointer-events: none; }
+
+
+/* ------------------------------------------------------------------ trade */
+
+/* The trade window is interface 335 (or 334, the confirmation screen) of the
+   cache, drawn at its own (17,25) over a live world - the player keeps walking
+   behind it, as they do in the client. Its children are all placed by
+   renderTrade(), so this only gives the window its own context and keeps the
+   clicks inside it. */
+.tradeWin { position: absolute; pointer-events: auto; }
+
+/* One live region of the trade window (title, grids, status...). The boxes
+   themselves are click-through so the buttons drawn beneath them keep working;
+   only offered stacks take clicks (withdrawing your own). */
+.tradeDyn { position: absolute; pointer-events: none; }
+.tradeDyn .slot { pointer-events: auto; }
+
+/* An item offered for trade: the icon sits straight on the interface's own dark
+   panel, with no slot plate behind it - the cache's offer container is a bare
+   box and the client draws nothing under the items. Hovering brightens the icon
+   the way the bank's does; the stack is clicked to take it back. */
+.tradeSlot { position: absolute; cursor: pointer; }
+.tradeSlot:hover { background: none; }
+.tradeSlot:hover > img { filter: brightness(1.4); }
+.tradeSlot > img { position: absolute; left: 0; top: 0; width: 32px; height: 32px; image-rendering: pixelated; }
+.tradeSlot .qty { top: 1px; }
+
+/* An item in one of the Items Kept on Death window's two lists (interface 102,
+   src/ui.js#renderItemsKept). The same bare icon on the interface's own dark
+   plate as an offer slot - the cache's list containers are empty boxes and the
+   client draws nothing under the items - but inert: these two lists are read,
+   not clicked, so there is no pointer cursor and only the icon brightens under
+   the pointer. `place()` writes left/top/width/height, so the class has to be
+   the one that makes the element absolutely positioned. */
+.keptSlot { position: absolute; }
+.keptSlot:hover { background: none; }
+.keptSlot:hover > img { filter: brightness(1.4); }
+.keptSlot > img { position: absolute; left: 0; top: 0; width: 32px; height: 32px; image-rendering: pixelated; }
+.keptSlot .qty { top: 1px; }
+
+
+/* ------------------------------------------------------------------- shop */
+
+/* The shop window is interface 300, built by renderShop() - it reuses the
+   bank's window element and needs no styles of its own beyond the item cells
+   under `.shopSlot` above. */
+
+/* ---------------------------------------------------------------- options */
+
+.optCol { position: absolute; width: 340px; }
+.optHead {
+  margin: 0;
+  padding: 2px 0;
+  color: #fff;
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 14px;
+}
+.optRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  gap: 4px;
+}.optRow .optIcon, .optRow .spr { position: relative; flex: 0 0 auto; }
+.optLabel { color: #ffd97a; font-family: "rs-plain11", monospace; font-size: 10px; line-height: 12px; }
+.optValue { color: #ffff00; font-family: "rs-plain11", monospace; font-size: 10px; }
+.optSlider { position: relative; width: 32px; height: 16px; cursor: pointer; }
+.sliderRow { position: absolute; }
+.optCheck { position: relative; cursor: pointer; }
+.optKeys { padding: 4px 0 0 2px; }
+.optKeys .note { display: block; }
+.optStats { margin-top: 10px; }
+
+/* The additional-settings window (src/ui.js#openExtraSettings): one switch per
+   row, the label on the left and the On/Off button on the right, with a line
+   under each saying what the switch actually does. */
+.modalbox .extraRow {
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.modalbox .extraRow .nm { font-family: "rs-bold12", monospace; }
+.modalbox .extraNote {
+  color: #d8d2c4;
+  margin: 2px 0 6px;
+  max-width: 470px;
+  line-height: 14px;
+}
+
+/* The options panel's one control that is not the cache's own: there is no art
+   for an "Open additional settings" button, so it is drawn flat and brightens
+   under the cursor the way a button with a hover sprite would. */
+.extraBtn { position: absolute; cursor: pointer; }
+.extraBtn:hover { filter: brightness(1.4); }
+.optStats .note { display: block; }
+.runIcon { cursor: pointer; }
+.runBar {
+  flex: 1 1 auto;
+  height: 10px;
+  max-width: 120px;
+  background: #241f18;
+  border: 1px solid #000;
+  overflow: hidden;
+}
+.runBarFill { height: 100%; background: #e8d75f; }
+
+/* ---------------------------------------------------------------- loading */
+
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: #0a0a0a;
+  transition: opacity 0.5s linear;
+}
+.loadTitle {
+  font-family: "rs-bold12", monospace;
+  font-size: 12px;
+  color: #ffff00;
+  letter-spacing: 1px;
+  /* letter-spacing adds a trailing space after the last glyph, which pulls
+     centred text half a pixel left; the negative margin cancels it so the
+     title sits exactly on the centre line */
+  margin-right: -1px;
+}
+.loadSub {
+  font-family: "rs-plain11", monospace;
+  font-size: 10px;
+  color: #ffd97a;
+}
+.loadSpin { display: flex; gap: 4px; }
+.loadSpin i {
+  width: 6px;
+  height: 6px;
+  background: #ffd97a;
+  animation: loadPulse 1s infinite;
+}
+.loadSpin i:nth-child(2) { animation-delay: 0.15s; }
+.loadSpin i:nth-child(3) { animation-delay: 0.3s; }
+.loadSpin i:nth-child(4) { animation-delay: 0.45s; }
+@keyframes loadPulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+/* ------------------------------------------------------- the item in the hand
+
+   The white ring round the item in the hand is in the sprite's own pixels
+   (src/icons.js#ringedIconCanvas, swapped in by src/ui.js#paintUseSlot), so
+   there is nothing for the stylesheet to draw here - the slot only wears
+   `.useSel` so the mark can be read off the DOM. */
+
+/* ============== the portrait phone's "rotate for a bigger view" line
+
+   Shown under the frame by src/gameframe.js#_updateRotateHint on a phone whose
+   screen is upright, where the 765x503 interface fits the width at about half
+   size and leaves most of the screen empty. It sits outside `.frame`, so it is
+   drawn in real CSS pixels rather than frame pixels and stays readable at any
+   frame scale, and it is placed in the empty band under the frame. There is no
+   cache art for it (the client has no such message) - it is the client's own
+   chat face on the client's own dark menu plate, which is the same treatment
+   every other "this world invented it" interface uses. */
+.rotateHint {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid #5a5346;
+  background: #1c1a16;
+  color: #cdc3a4;
+  font-family: "rs-plain12", monospace;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.rotateHint[hidden] { display: none; }
+.rotateHintX {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1;
+  color: #cdc3a4;
+  background: transparent;
+  border: 0;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+.rotateHintX:hover { color: #fff; }
+
+/* ============================================== sharp text (src/sharp.js)
+
+   The interface's own text is rasterised one square per interface pixel onto a
+   canvas per layer, so that it is never rasterised by the browser at a
+   fractional size. The DOM keeps the text - it is what lays the words out - but
+   its glyphs are made transparent, and the canvas carries the drawn ones.
+
+   `image-rendering` here is the default only: `sharp.js#paint` rewrites it per
+   pass, keeping `pixelated` while one interface square is a whole number of
+   *screen* pixels and resampling smoothly when it is not (a fractional scale
+   rounds every 1px stroke to 1 or 2 screen pixels, which reads as thin, uneven
+   letters - see the note there).
+
+   `.sharpLayer` is appended as its layer's last child (so it paints above the
+   layer's own content, and never above a *layer* the interface puts on top of
+   it), fills the layer's padding box, and takes no clicks. */
+.sharpText { color: transparent !important; text-shadow: none !important; }
+.sharpLayer {
+  position: absolute;
+  pointer-events: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* MUST out-rank the interface it carries the glyphs of, and MUST stay under
+     the context menu. The canvas holds the text of elements whose own glyphs
+     are transparent, so anything painted above it hides that text completely,
+     and anything *under* it is painted under text that belongs to a lower
+     interface. The overlay layer's children are the ones that matter: #fullIface
+     (30, the bank and the shop) and the design/name screens (35) must be below
+     the canvas, while the context menu (40) must be above it.
+
+     Both halves of that have been wrong once. Left at `z-index: auto` the
+     canvas sat *underneath* all three, so the bank's and the shop's labels and
+     the menu's own rows were drawn and then covered - the "right-click menu
+     isn't rendering properly" and "the text is not clear" of 2026-09-20. Raised
+     to 45 (above the menu) that was fixed but bought the opposite fault: a shop
+     or bank row's text, drawn on this canvas, then painted *over* an open
+     right-click menu - the item quantities showing through the menu in the
+     skillcape shop (the eighteenth report). 38 sits above the full interfaces
+     (30) and the design/name screens (35) and below the context menu (40),
+     which is the one order that satisfies both. The canvas is transparent and
+     takes no pointer, so its place in the layer costs nothing either way.
+
+     No order can satisfy both for *one* canvas, though, and the menu is the
+     remaining half of it: at 38 the menu's own rows, which are drawn on this
+     canvas too, are covered by the menu's own brown box - a blank menu (the
+     twentieth report). So the menu is a **text host of its own**
+     (`sharp.js#collect`): its glyphs go on a canvas appended inside the menu,
+     above its box whatever this layer's z-index is, and the rows/quantities
+     conflict above stops existing. This rule still governs every other glyph
+     canvas - and every one of them belongs to an element *under* the menu. */
+  z-index: 38;
+}
