@@ -2,55 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Old School Webscape</title>
 <meta name="description" content="A RuneScape-inspired browser MMORPG with skills, combat and a shared online world.">
 <style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
   html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #000;
-    overflow: hidden;
+    margin: 0; padding: 0; min-height: 100%;
+    background: #0b0e14;
+    color: #e8e0c8;
+    font-family: Georgia, "Times New Roman", serif;
+    display: flex; align-items: center; justify-content: center;
   }
-  #game {
-    border: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
+  body::before {
+    content: ""; position: fixed; inset: 0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(120, 84, 30, .25), transparent 60%),
+      radial-gradient(900px 500px at 50% 115%, rgba(30, 70, 40, .25), transparent 60%);
+    pointer-events: none;
   }
-  #fallback {
-    display: none;
-    color: #eee;
-    font-family: sans-serif;
-    text-align: center;
-    padding: 10vh 5vw;
+  .card {
+    position: relative; text-align: center;
+    max-width: 560px; margin: 24px; padding: 48px 40px;
+    background: rgba(16, 20, 28, .92);
+    border: 1px solid #6b5320;
+    border-radius: 10px;
+    box-shadow: 0 0 60px rgba(0,0,0,.7), inset 0 0 40px rgba(107,83,32,.08);
   }
-  #fallback a { color: #8ab4ff; }
+  h1 {
+    margin: 0 0 8px; font-size: 2.4em; letter-spacing: 1px;
+    color: #ffd75e; text-shadow: 0 2px 0 #5a3c00, 0 0 24px rgba(255, 215, 94, .25);
+  }
+  .tag { color: #9aa3b2; font-style: italic; margin: 0 0 20px; }
+  p.desc { line-height: 1.6; color: #cfc7ab; margin: 0 0 28px; }
+  .play {
+    display: inline-block; padding: 14px 54px;
+    font-family: inherit; font-size: 1.25em; font-weight: bold; letter-spacing: 1px;
+    color: #1a1206; text-decoration: none;
+    background: linear-gradient(#ffe27a, #d9a91f);
+    border: 2px solid #8a6a10; border-radius: 6px;
+    box-shadow: 0 4px 0 #6b4e00, 0 6px 18px rgba(0,0,0,.5);
+    transition: transform .08s ease, box-shadow .08s ease;
+  }
+  .play:hover { transform: translateY(-1px); }
+  .play:active { transform: translateY(2px); box-shadow: 0 1px 0 #6b4e00; }
+  .note { margin: 22px 0 0; font-size: .85em; color: #7c8494; }
+  .note a { color: #8ab4ff; }
 </style>
 </head>
 <body>
-<iframe id="game" src="https://perchance.org/wwz10sn5z6" title="Old School Webscape"
-        allow="fullscreen" allowfullscreen></iframe>
-<div id="fallback">
-  <h1>Old School Webscape</h1>
-  <p>The game could not be embedded here. You can still play it directly on Perchance:</p>
-  <p><a href="https://perchance.org/wwz10sn5z6">Play Old School Webscape on Perchance</a></p>
-</div>
-<script>
-  // If the frame is blocked (e.g. framing refused), show the fallback link.
-  window.addEventListener("message", function () {});
-  setTimeout(function () {
-    var f = document.getElementById("game");
-    try {
-      // Accessing contentDocument throws when cross-origin; a blocked frame
-      // typically leaves contentDocument null on some browsers.
-      if (!f.contentDocument && !f.contentWindow) {
-        document.getElementById("fallback").style.display = "block";
-        f.style.display = "none";
-      }
-    } catch (e) { /* cross-origin: game is loading normally */ }
-  }, 8000);
-</script>
+  <div class="card">
+    <h1>Old School Webscape</h1>
+    <p class="tag">A RuneScape-inspired browser MMORPG</p>
+    <p class="desc">Train skills, fight monsters, trade with other players and explore a
+      shared online world &mdash; right in your browser. No download needed.</p>
+    <a class="play" href="https://perchance.org/wwz10sn5z6">Play Now</a>
+    <p class="note">The game runs on Perchance &mdash; your characters and the shared world live there.<br>
+      <a href="https://github.com/xerohour/old-school-webscape">github.com/xerohour/old-school-webscape</a></p>
+  </div>
 </body>
 </html>
