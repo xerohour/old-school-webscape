@@ -19,6 +19,15 @@
 
 * { box-sizing: border-box; }
 
+/* Port fix: the boot code hides the #loading overlay with the `hidden`
+   attribute, but #loading's own rule sets `display: flex`, and an author
+   display always beats the UA `[hidden] { display: none }` rule - so the
+   overlay stayed invisible-but-present, covering the viewport at z-index 50
+   and swallowing every mouse click after boot. On Perchance this never
+   showed because the platform's own CSS includes the standard [hidden]
+   reset; the standalone port needs its own. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
