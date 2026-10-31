@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Old School Webscape</title>
+<meta name="description" content="A RuneScape-inspired browser MMORPG with skills, combat and a shared online world.">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+  }
+  #game {
+    border: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #fallback {
+    display: none;
+    color: #eee;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 10vh 5vw;
+  }
+  #fallback a { color: #8ab4ff; }
+</style>
+</head>
+<body>
+<iframe id="game" src="https://perchance.org/wwz10sn5z6" title="Old School Webscape"
+        allow="fullscreen" allowfullscreen></iframe>
+<div id="fallback">
+  <h1>Old School Webscape</h1>
+  <p>The game could not be embedded here. You can still play it directly on Perchance:</p>
+  <p><a href="https://perchance.org/wwz10sn5z6">Play Old School Webscape on Perchance</a></p>
+</div>
+<script>
+  // If the frame is blocked (e.g. framing refused), show the fallback link.
+  window.addEventListener("message", function () {});
+  setTimeout(function () {
+    var f = document.getElementById("game");
+    try {
+      // Accessing contentDocument throws when cross-origin; a blocked frame
+      // typically leaves contentDocument null on some browsers.
+      if (!f.contentDocument && !f.contentWindow) {
+        document.getElementById("fallback").style.display = "block";
+        f.style.display = "none";
+      }
+    } catch (e) { /* cross-origin: game is loading normally */ }
+  }, 8000);
+</script>
+</body>
+</html>
