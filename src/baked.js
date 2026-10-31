@@ -25,7 +25,7 @@
    it only ever needs to *change*.
    =========================================================================== */
 
-export const BAKED_VERSION = "2026-10-30cay-coconut";
+export const BAKED_VERSION = "2026-10-31pngfix1";
 
 /* A path under src/, tagged with the current bake generation. */
 export function bakedURL(path) {
