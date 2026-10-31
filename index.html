@@ -1,65 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Old School Webscape</title>
-<meta name="description" content="A RuneScape-inspired browser MMORPG with skills, combat and a shared online world.">
-<style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0; min-height: 100%;
-    background: #0b0e14;
-    color: #e8e0c8;
-    font-family: Georgia, "Times New Roman", serif;
-    display: flex; align-items: center; justify-content: center;
-  }
-  body::before {
-    content: ""; position: fixed; inset: 0;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, rgba(120, 84, 30, .25), transparent 60%),
-      radial-gradient(900px 500px at 50% 115%, rgba(30, 70, 40, .25), transparent 60%);
-    pointer-events: none;
-  }
-  .card {
-    position: relative; text-align: center;
-    max-width: 560px; margin: 24px; padding: 48px 40px;
-    background: rgba(16, 20, 28, .92);
-    border: 1px solid #6b5320;
-    border-radius: 10px;
-    box-shadow: 0 0 60px rgba(0,0,0,.7), inset 0 0 40px rgba(107,83,32,.08);
-  }
-  h1 {
-    margin: 0 0 8px; font-size: 2.4em; letter-spacing: 1px;
-    color: #ffd75e; text-shadow: 0 2px 0 #5a3c00, 0 0 24px rgba(255, 215, 94, .25);
-  }
-  .tag { color: #9aa3b2; font-style: italic; margin: 0 0 20px; }
-  p.desc { line-height: 1.6; color: #cfc7ab; margin: 0 0 28px; }
-  .play {
-    display: inline-block; padding: 14px 54px;
-    font-family: inherit; font-size: 1.25em; font-weight: bold; letter-spacing: 1px;
-    color: #1a1206; text-decoration: none;
-    background: linear-gradient(#ffe27a, #d9a91f);
-    border: 2px solid #8a6a10; border-radius: 6px;
-    box-shadow: 0 4px 0 #6b4e00, 0 6px 18px rgba(0,0,0,.5);
-    transition: transform .08s ease, box-shadow .08s ease;
-  }
-  .play:hover { transform: translateY(-1px); }
-  .play:active { transform: translateY(2px); box-shadow: 0 1px 0 #6b4e00; }
-  .note { margin: 22px 0 0; font-size: .85em; color: #7c8494; }
-  .note a { color: #8ab4ff; }
-</style>
-</head>
-<body>
-  <div class="card">
-    <h1>Old School Webscape</h1>
-    <p class="tag">A RuneScape-inspired browser MMORPG</p>
-    <p class="desc">Train skills, fight monsters, trade with other players and explore a
-      shared online world &mdash; right in your browser. No download needed.</p>
-    <a class="play" href="https://perchance.org/wwz10sn5z6">Play Now</a>
-    <p class="note">The game runs on Perchance &mdash; your characters and the shared world live there.<br>
-      <a href="https://github.com/xerohour/old-school-webscape">github.com/xerohour/old-school-webscape</a></p>
-  </div>
-</body>
-</html>
+<script>
+  /* the game owns the right mouse button (walk-to / examine menus), so the
+     browser's own context menu, middle-click autoscroll and text/image dragging
+     are all suppressed page-wide */
+  (function () {
+    var kill = function (e) { e.preventDefault(); return false; };
+    window.addEventListener("contextmenu", kill, { capture: true });
+    window.addEventListener("mousedown", function (e) { if (e.button === 2 || e.button === 1) e.preventDefault(); }, { capture: true });
+    window.addEventListener("mouseup", function (e) { if (e.button === 2 || e.button === 1) e.preventDefault(); }, { capture: true });
+    window.addEventListener("pointerdown", function (e) { if (e.button !== 0) e.preventDefault(); }, { capture: true });
+    window.addEventListener("pointerup", function (e) { if (e.button !== 0) e.preventDefault(); }, { capture: true });
+    window.addEventListener("auxclick", function (e) { if (e.button !== 0) e.preventDefault(); }, { capture: true });
+    window.addEventListener("dragstart", kill, { capture: true });
+    window.addEventListener("selectstart", function (e) { if (!/^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || "")) kill(e); }, { capture: true });
+  })();
+  /* Mobile touch capture: a press that starts on the game belongs to the game,
+     never to the browser. The CSS (`touch-action`) already says this where the
+     browser honors it; this is the half for where it does not (older iOS):
+     `touchmove` on the 3D surface never becomes a page scroll or a
+     pull-to-refresh, `gesturestart` never becomes a page pinch-zoom, and a
+     double-tap on the frame never zooms. The game's own tap/hold/pinch/orbit
+     gestures listen to pointer events, which none of this cancels, and native
+     scrollers and form fields are left alone. */
+  (function () {
+    var onSurface = function (t) { return !!(t && t.closest && t.closest("#gameCanvas,#fxLayer")); };
+    var inField = function (t) { return !!(t && t.closest && t.closest("INPUT,TEXTAREA,SELECT")); };
+    window.addEventListener("touchmove", function (e) {
+      if (e.touches && e.touches.length && onSurface(e.target)) e.preventDefault();
+    }, { capture: true, passive: false });
+    window.addEventListener("gesturestart", function (e) { e.preventDefault(); }, { capture: true, passive: false });
+    window.addEventListener("dblclick", function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest("#frameHost") && !inField(t)) e.preventDefault();
+    }, { capture: true });
+  })();
+</script>
+
+<div id="frameHost"></div>
+
+<div id="loading">
+  <div class="loadTitle">Old School Webscape</div>
+  <div class="loadSpin"><i></i><i></i><i></i><i></i></div>
+  <div class="loadSub">Building the world...</div>
+</div>
+
+<link rel="stylesheet" href="src/fonts.css">
+<link rel="stylesheet" href="src/style.css">
+<script src="src/port-shim.js"></script>
+<script type="module" src="src/main.js"></script>
+
+

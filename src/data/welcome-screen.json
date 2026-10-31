@@ -1,0 +1,245 @@
+{
+ "source": {
+  "index": 3,
+  "archive": 378,
+  "note": "the client's pre-game welcome screen, component for component as cache 241 defines it (config index 3, archive 378). Sprite names are the frame atlas parts baked from the same cache (tools/cache-bake/frame.mjs); fonts are the cache's own ids 494/495/496/497. The five components the cache leaves empty (files 13,14,15,16,18) are the four box bodies and the last-login line: the real client fills those at runtime with account state, and so does src/titlescreen.js."
+ },
+ "window": {
+  "width": 765,
+  "height": 503
+ },
+ "background": "#000000",
+ "parts": [
+  {
+   "id": 0,
+   "type": 3,
+   "x": 0,
+   "y": 0,
+   "w": 765,
+   "h": 503,
+   "filled": false
+  },
+  {
+   "id": 1,
+   "type": 5,
+   "x": 132,
+   "y": 13,
+   "w": 503,
+   "h": 47,
+   "sprite": "welcomeBanner"
+  },
+  {
+   "id": 2,
+   "type": 5,
+   "x": 29,
+   "y": 74,
+   "w": 343,
+   "h": 90,
+   "sprite": "welcomePanel"
+  },
+  {
+   "id": 3,
+   "type": 5,
+   "x": 394,
+   "y": 74,
+   "w": 343,
+   "h": 90,
+   "sprite": "welcomePanel"
+  },
+  {
+   "id": 4,
+   "type": 5,
+   "x": 394,
+   "y": 183,
+   "w": 343,
+   "h": 90,
+   "sprite": "welcomePanel"
+  },
+  {
+   "id": 5,
+   "type": 5,
+   "x": 29,
+   "y": 183,
+   "w": 343,
+   "h": 90,
+   "sprite": "welcomePanel"
+  },
+  {
+   "id": 6,
+   "type": 5,
+   "x": 271,
+   "y": 292,
+   "w": 229,
+   "h": 90,
+   "sprite": "welcomePlayButton",
+   "clickable": true,
+   "tooltip": "Play RuneScape"
+  },
+  {
+   "id": 7,
+   "type": 5,
+   "x": 398,
+   "y": 78,
+   "w": 79,
+   "h": 82,
+   "sprite": "welcomeIconMail"
+  },
+  {
+   "id": 8,
+   "type": 5,
+   "x": 29,
+   "y": 79,
+   "w": 69,
+   "h": 82,
+   "sprite": "welcomeIconKey"
+  },
+  {
+   "id": 9,
+   "type": 5,
+   "x": 398,
+   "y": 188,
+   "w": 77,
+   "h": 82,
+   "sprite": "welcomeIconCoins"
+  },
+  {
+   "id": 10,
+   "type": 5,
+   "x": 32,
+   "y": 188,
+   "w": 66,
+   "h": 82,
+   "sprite": "welcomeIconBank"
+  },
+  {
+   "id": 11,
+   "type": 5,
+   "x": 276,
+   "y": 295,
+   "w": 66,
+   "h": 83,
+   "sprite": "welcomePlaySword"
+  },
+  {
+   "id": 12,
+   "type": 4,
+   "x": 150,
+   "y": 17,
+   "w": 467,
+   "h": 16,
+   "font": "quill8",
+   "text": "Welcome to RuneScape",
+   "colour": 16711680,
+   "shadow": false,
+   "align": "center",
+   "valign": "top"
+  },
+  {
+   "id": 13,
+   "type": 4,
+   "x": 150,
+   "y": 39,
+   "w": 467,
+   "h": 14,
+   "font": "plain12",
+   "colour": 0,
+   "shadow": false,
+   "align": "center",
+   "valign": "top"
+  },
+  {
+   "id": 14,
+   "type": 4,
+   "x": 97,
+   "y": 74,
+   "w": 275,
+   "h": 90,
+   "font": "plain12",
+   "colour": 16776960,
+   "shadow": false,
+   "align": "center",
+   "valign": "center"
+  },
+  {
+   "id": 15,
+   "type": 4,
+   "x": 478,
+   "y": 98,
+   "w": 257,
+   "h": 42,
+   "font": "plain12",
+   "colour": 16776960,
+   "shadow": true,
+   "align": "center",
+   "valign": "center"
+  },
+  {
+   "id": 16,
+   "type": 4,
+   "x": 99,
+   "y": 183,
+   "w": 273,
+   "h": 90,
+   "font": "plain12",
+   "colour": 16776960,
+   "shadow": true,
+   "align": "center",
+   "valign": "center"
+  },
+  {
+   "id": 17,
+   "type": 4,
+   "x": 344,
+   "y": 292,
+   "w": 156,
+   "h": 90,
+   "font": "bold12",
+   "text": "CLICK HERE TO PLAY",
+   "colour": 16777215,
+   "shadow": true,
+   "align": "center",
+   "valign": "center"
+  },
+  {
+   "id": 18,
+   "type": 4,
+   "x": 476,
+   "y": 183,
+   "w": 261,
+   "h": 90,
+   "font": "plain12",
+   "colour": 16776960,
+   "shadow": true,
+   "align": "center",
+   "valign": "center"
+  },
+  {
+   "id": 19,
+   "type": 8,
+   "x": 394,
+   "y": 74,
+   "w": 343,
+   "h": 90,
+   "line": true,
+   "text": "To view your messages:<br>1) Logout and return to the front page of this website.<br>2) Choose 'Profile & Settings' from the footer.<br>3) Log in and then select 'Messages'."
+  },
+  {
+   "id": 20,
+   "type": 8,
+   "x": 393,
+   "y": 183,
+   "w": 344,
+   "h": 90,
+   "line": true
+  },
+  {
+   "id": 21,
+   "type": 8,
+   "x": 29,
+   "y": 74,
+   "w": 343,
+   "h": 90,
+   "line": true
+  }
+ ]
+}

@@ -1,0 +1,938 @@
+{
+ "cow": {
+  "npcId": 81,
+  "name": "Cow",
+  "combatLevel": 2,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "cow_2": {
+  "npcId": 397,
+  "name": "Cow",
+  "combatLevel": 2,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "cow_3": {
+  "npcId": 955,
+  "name": "Cow",
+  "combatLevel": 2,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "cow_4": {
+  "npcId": 1767,
+  "name": "Cow",
+  "combatLevel": 2,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "cow_calf": {
+  "npcId": 1766,
+  "name": "Cow calf",
+  "combatLevel": 2,
+  "size": 2,
+  "heightScale": 68,
+  "widthScale": 68
+ },
+ "chicken": {
+  "npcId": 41,
+  "name": "Chicken",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 80,
+  "widthScale": 80
+ },
+ "chicken_2": {
+  "npcId": 1017,
+  "name": "Chicken",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 80,
+  "widthScale": 80
+ },
+ "chicken_3": {
+  "npcId": 2313,
+  "name": "Chicken",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 85,
+  "widthScale": 85
+ },
+ "chicken_4": {
+  "npcId": 2315,
+  "name": "Chicken",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 85,
+  "widthScale": 85
+ },
+ "rooster": {
+  "npcId": 1018,
+  "name": "Rooster",
+  "combatLevel": 3,
+  "size": 1,
+  "heightScale": 100,
+  "widthScale": 100
+ },
+ "rat": {
+  "npcId": 47,
+  "name": "Rat",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 134,
+  "widthScale": 133
+ },
+ "giant_rat": {
+  "npcId": 86,
+  "name": "Giant rat",
+  "combatLevel": 3,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "goblin": {
+  "npcId": 100,
+  "name": "Goblin",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "zombie": {
+  "npcId": 75,
+  "name": "Zombie",
+  "combatLevel": 24,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "skeleton": {
+  "npcId": 90,
+  "name": "Skeleton",
+  "combatLevel": 22,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "ghost": {
+  "npcId": 103,
+  "name": "Ghost",
+  "combatLevel": 19,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "giant_spider": {
+  "npcId": 59,
+  "name": "Giant spider",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "imp": {
+  "npcId": 708,
+  "name": "Imp",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "unicorn": {
+  "npcId": 89,
+  "name": "Unicorn",
+  "combatLevel": 15,
+  "size": 2,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "man": {
+  "npcId": 1,
+  "name": "Man",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "woman": {
+  "npcId": 4,
+  "name": "Woman",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "farmer": {
+  "npcId": 7,
+  "name": "Farmer",
+  "combatLevel": 7,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "fred": {
+  "npcId": 758,
+  "name": "Fred the Farmer",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "guard": {
+  "npcId": 9,
+  "name": "Guard",
+  "combatLevel": 21,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "banker": {
+  "npcId": 494,
+  "name": "Banker",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "shopkeeper": {
+  "npcId": 520,
+  "name": "Shop keeper",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "monk": {
+  "npcId": 222,
+  "name": "Monk",
+  "combatLevel": 5,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "dark_wizard": {
+  "npcId": 172,
+  "name": "Dark wizard",
+  "combatLevel": 20,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "barbarian": {
+  "npcId": 12,
+  "name": "Barbarian",
+  "combatLevel": 7,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "wizard": {
+  "npcId": 13,
+  "name": "Wizard",
+  "combatLevel": 9,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "druid": {
+  "npcId": 14,
+  "name": "Druid",
+  "combatLevel": 33,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "warrior_woman": {
+  "npcId": 15,
+  "name": "Warrior woman",
+  "combatLevel": 24,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "knight_of_ardougne": {
+  "npcId": 23,
+  "name": "Knight of Ardougne",
+  "combatLevel": 46,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "priest": {
+  "npcId": 31,
+  "name": "Priest",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "soldier": {
+  "npcId": 35,
+  "name": "Soldier",
+  "combatLevel": 28,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "mugger": {
+  "npcId": 175,
+  "name": "Mugger",
+  "combatLevel": 6,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "black_knight": {
+  "npcId": 178,
+  "name": "Black Knight",
+  "combatLevel": 33,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "highwayman": {
+  "npcId": 180,
+  "name": "Highwayman",
+  "combatLevel": 5,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "rogue": {
+  "npcId": 187,
+  "name": "Rogue",
+  "combatLevel": 15,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "monk_of_zamorak": {
+  "npcId": 188,
+  "name": "Monk of Zamorak",
+  "combatLevel": 22,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "solus_dellagar": {
+  "npcId": 2747,
+  "name": "Solus Dellagar",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "ranger": {
+  "npcId": 2779,
+  "name": "Ranger",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "surok_magis": {
+  "npcId": 5834,
+  "name": "Surok Magis",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "surok_magis_dagonhai": {
+  "npcId": 5835,
+  "name": "Surok Magis",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "thormac": {
+  "npcId": 389,
+  "name": "Thormac",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "duke": {
+  "npcId": 741,
+  "name": "Duke Horacio",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "beekeeper": {
+  "npcId": 4416,
+  "name": "Bee keeper",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "ahrim": {
+  "npcId": 2025,
+  "name": "Ahrim the Blighted",
+  "combatLevel": 98,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "dharok": {
+  "npcId": 2026,
+  "name": "Dharok the Wretched",
+  "combatLevel": 115,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "guthan": {
+  "npcId": 2027,
+  "name": "Guthan the Infested",
+  "combatLevel": 115,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "karil": {
+  "npcId": 2028,
+  "name": "Karil the Tainted",
+  "combatLevel": 98,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "torag": {
+  "npcId": 2029,
+  "name": "Torag the Corrupted",
+  "combatLevel": 115,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "verac": {
+  "npcId": 2030,
+  "name": "Verac the Defiled",
+  "combatLevel": 115,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "unicorn_foal": {
+  "npcId": 1328,
+  "name": "Unicorn Foal",
+  "combatLevel": 12,
+  "size": 2,
+  "heightScale": 86,
+  "widthScale": 86
+ },
+ "skeleton_mage": {
+  "npcId": 94,
+  "name": "Skeleton Mage",
+  "combatLevel": 16,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "skeleton_2": {
+  "npcId": 93,
+  "name": "Skeleton",
+  "combatLevel": 45,
+  "size": 1,
+  "heightScale": 108,
+  "widthScale": 108
+ },
+ "zombie_2": {
+  "npcId": 73,
+  "name": "Zombie",
+  "combatLevel": 13,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "zombie_3": {
+  "npcId": 74,
+  "name": "Zombie",
+  "combatLevel": 18,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "zombie_4": {
+  "npcId": 419,
+  "name": "Zombie",
+  "combatLevel": 14,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "goblin_2": {
+  "npcId": 101,
+  "name": "Goblin",
+  "combatLevel": 5,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "goblin_3": {
+  "npcId": 102,
+  "name": "Goblin",
+  "combatLevel": 13,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "giant_rat_2": {
+  "npcId": 87,
+  "name": "Giant rat",
+  "combatLevel": 6,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "duck": {
+  "npcId": 46,
+  "name": "Duck",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "duckling": {
+  "npcId": 2694,
+  "name": "Duckling",
+  "combatLevel": 1,
+  "size": 1,
+  "heightScale": 64,
+  "widthScale": 64
+ },
+ "seagull": {
+  "npcId": 6115,
+  "name": "Seagull",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "sheep": {
+  "npcId": 42,
+  "name": "Sheep",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "sheep_2": {
+  "npcId": 43,
+  "name": "Sheep",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "ram": {
+  "npcId": 3672,
+  "name": "Ram",
+  "combatLevel": 2,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "guard_dog": {
+  "npcId": 99,
+  "name": "Guard dog",
+  "combatLevel": 44,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "wolf": {
+  "npcId": 95,
+  "name": "Wolf",
+  "combatLevel": 64,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "dwarf": {
+  "npcId": 118,
+  "name": "Dwarf",
+  "combatLevel": 10,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "hobgoblin": {
+  "npcId": 122,
+  "name": "Hobgoblin",
+  "combatLevel": 28,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "bear_cub": {
+  "npcId": 1326,
+  "name": "Bear Cub",
+  "combatLevel": 15,
+  "size": 2,
+  "heightScale": 148,
+  "widthScale": 148
+ },
+ "black_bear": {
+  "npcId": 106,
+  "name": "Black bear",
+  "combatLevel": 19,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "hill_giant": {
+  "npcId": 117,
+  "name": "Hill Giant",
+  "combatLevel": 28,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "moss_giant": {
+  "npcId": 112,
+  "name": "Moss giant",
+  "combatLevel": 42,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "fire_giant": {
+  "npcId": 110,
+  "name": "Fire giant",
+  "combatLevel": 86,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "ice_giant": {
+  "npcId": 111,
+  "name": "Ice giant",
+  "combatLevel": 53,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "lesser_demon": {
+  "npcId": 82,
+  "name": "Lesser demon",
+  "combatLevel": 82,
+  "size": 2,
+  "heightScale": 86,
+  "widthScale": 86
+ },
+ "greater_demon": {
+  "npcId": 83,
+  "name": "Greater demon",
+  "combatLevel": 92,
+  "size": 3,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "scorpion": {
+  "npcId": 107,
+  "name": "Scorpion",
+  "combatLevel": 14,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "deadly_red_spider": {
+  "npcId": 63,
+  "name": "Deadly red spider",
+  "combatLevel": 34,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "giant_bat": {
+  "npcId": 78,
+  "name": "Giant bat",
+  "combatLevel": 27,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "crawling_hand": {
+  "npcId": 1648,
+  "name": "Crawling Hand",
+  "combatLevel": 8,
+  "size": 1,
+  "heightScale": 112,
+  "widthScale": 112
+ },
+ "banshee": {
+  "npcId": 1612,
+  "name": "Banshee",
+  "combatLevel": 23,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "blue_dragon": {
+  "npcId": 55,
+  "name": "Blue dragon",
+  "combatLevel": 111,
+  "size": 4,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "green_dragon": {
+  "npcId": 941,
+  "name": "Green dragon",
+  "combatLevel": 79,
+  "size": 4,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "red_dragon": {
+  "npcId": 53,
+  "name": "Red dragon",
+  "combatLevel": 152,
+  "size": 4,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "black_dragon": {
+  "npcId": 54,
+  "name": "Black dragon",
+  "combatLevel": 227,
+  "size": 4,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "snake": {
+  "npcId": 128,
+  "name": "Snake",
+  "combatLevel": 5,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "earth_warrior": {
+  "npcId": 124,
+  "name": "Earth warrior",
+  "combatLevel": 51,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "chaos_druid": {
+  "npcId": 181,
+  "name": "Chaos druid",
+  "combatLevel": 13,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "hans": {
+  "npcId": 0,
+  "name": "Hans",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "lumbridge_guide": {
+  "npcId": 2244,
+  "name": "Lumbridge Guide",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "cook": {
+  "npcId": 278,
+  "name": "Cook",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "fisherman": {
+  "npcId": 219,
+  "name": "Fisherman",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "miner": {
+  "npcId": 5497,
+  "name": "Miner",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "beggar": {
+  "npcId": 252,
+  "name": "Beggar",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "child": {
+  "npcId": 2874,
+  "name": "Child",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 116,
+  "widthScale": 116
+ },
+ "schoolgirl": {
+  "npcId": 10,
+  "name": "Schoolgirl",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "gardener": {
+  "npcId": 1217,
+  "name": "Gardener",
+  "combatLevel": 4,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "shop_assistant": {
+  "npcId": 521,
+  "name": "Shop assistant",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "apprentice": {
+  "npcId": 1510,
+  "name": "Apprentice",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "drunken_man": {
+  "npcId": 3222,
+  "name": "Drunken man",
+  "combatLevel": 3,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "tanner": {
+  "npcId": 804,
+  "name": "Tanner",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "bob": {
+  "npcId": 519,
+  "name": "Bob",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "wise_old_man": {
+  "npcId": 2253,
+  "name": "Wise Old Man",
+  "combatLevel": 0,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "dagannoth_supreme": {
+  "npcId": 2881,
+  "name": "Dagannoth Supreme",
+  "combatLevel": 303,
+  "size": 3,
+  "heightScale": 165,
+  "widthScale": 167
+ },
+ "dagannoth_prime": {
+  "npcId": 2882,
+  "name": "Dagannoth Prime",
+  "combatLevel": 303,
+  "size": 3,
+  "heightScale": 180,
+  "widthScale": 175
+ },
+ "dagannoth_rex": {
+  "npcId": 2883,
+  "name": "Dagannoth Rex",
+  "combatLevel": 303,
+  "size": 3,
+  "heightScale": 190,
+  "widthScale": 220
+ },
+ "king_black_dragon": {
+  "npcId": 50,
+  "name": "King Black Dragon",
+  "combatLevel": 276,
+  "size": 5,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "dark_warrior": {
+  "npcId": 192,
+  "name": "Dark warrior",
+  "combatLevel": 8,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "bandit": {
+  "npcId": 195,
+  "name": "Bandit",
+  "combatLevel": 22,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "chaos_dwarf": {
+  "npcId": 119,
+  "name": "Chaos dwarf",
+  "combatLevel": 48,
+  "size": 1,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "black_unicorn": {
+  "npcId": 133,
+  "name": "Black unicorn",
+  "combatLevel": 27,
+  "size": 2,
+  "heightScale": 110,
+  "widthScale": 110
+ },
+ "grizzly_bear": {
+  "npcId": 105,
+  "name": "Grizzly bear",
+  "combatLevel": 21,
+  "size": 2,
+  "heightScale": 128,
+  "widthScale": 128
+ },
+ "black_demon": {
+  "npcId": 84,
+  "name": "Black Demon",
+  "combatLevel": 172,
+  "size": 3,
+  "heightScale": 128,
+  "widthScale": 128
+ }
+}

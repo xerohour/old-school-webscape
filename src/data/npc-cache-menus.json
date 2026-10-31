@@ -1,0 +1,1311 @@
+{
+ "cow": {
+  "npcId": 81,
+  "name": "Cow",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "cow_2": {
+  "npcId": 397,
+  "name": "Cow",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "cow_3": {
+  "npcId": 955,
+  "name": "Cow",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "cow_4": {
+  "npcId": 1767,
+  "name": "Cow",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "cow_calf": {
+  "npcId": 1766,
+  "name": "Cow calf",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chicken": {
+  "npcId": 41,
+  "name": "Chicken",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chicken_2": {
+  "npcId": 1017,
+  "name": "Chicken",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chicken_3": {
+  "npcId": 2313,
+  "name": "Chicken",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chicken_4": {
+  "npcId": 2315,
+  "name": "Chicken",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "rooster": {
+  "npcId": 1018,
+  "name": "Rooster",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "rat": {
+  "npcId": 47,
+  "name": "Rat",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "giant_rat": {
+  "npcId": 86,
+  "name": "Giant rat",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "goblin": {
+  "npcId": 100,
+  "name": "Goblin",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "zombie": {
+  "npcId": 75,
+  "name": "Zombie",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "skeleton": {
+  "npcId": 90,
+  "name": "Skeleton",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "ghost": {
+  "npcId": 103,
+  "name": "Ghost",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "giant_spider": {
+  "npcId": 59,
+  "name": "Giant spider",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "imp": {
+  "npcId": 708,
+  "name": "Imp",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "unicorn": {
+  "npcId": 89,
+  "name": "Unicorn",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "man": {
+  "npcId": 1,
+  "name": "Man",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "woman": {
+  "npcId": 4,
+  "name": "Woman",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "farmer": {
+  "npcId": 7,
+  "name": "Farmer",
+  "actions": [
+   null,
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "fred": {
+  "npcId": 758,
+  "name": "Fred the Farmer",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "guard": {
+  "npcId": 9,
+  "name": "Guard",
+  "actions": [
+   null,
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "banker": {
+  "npcId": 494,
+  "name": "Banker",
+  "actions": [
+   "Talk-to",
+   null,
+   "Bank",
+   null,
+   null
+  ]
+ },
+ "shopkeeper": {
+  "npcId": 520,
+  "name": "Shop keeper",
+  "actions": [
+   "Talk-to",
+   null,
+   "Trade",
+   null,
+   null
+  ]
+ },
+ "monk": {
+  "npcId": 222,
+  "name": "Monk",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dark_wizard": {
+  "npcId": 172,
+  "name": "Dark wizard",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "barbarian": {
+  "npcId": 12,
+  "name": "Barbarian",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "wizard": {
+  "npcId": 13,
+  "name": "Wizard",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "druid": {
+  "npcId": 14,
+  "name": "Druid",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "warrior_woman": {
+  "npcId": 15,
+  "name": "Warrior woman",
+  "actions": [
+   null,
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "knight_of_ardougne": {
+  "npcId": 23,
+  "name": "Knight of Ardougne",
+  "actions": [
+   null,
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "priest": {
+  "npcId": 31,
+  "name": "Priest",
+  "actions": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "soldier": {
+  "npcId": 35,
+  "name": "Soldier",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "mugger": {
+  "npcId": 175,
+  "name": "Mugger",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "black_knight": {
+  "npcId": 178,
+  "name": "Black Knight",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "highwayman": {
+  "npcId": 180,
+  "name": "Highwayman",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "rogue": {
+  "npcId": 187,
+  "name": "Rogue",
+  "actions": [
+   null,
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "monk_of_zamorak": {
+  "npcId": 188,
+  "name": "Monk of Zamorak",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "solus_dellagar": {
+  "npcId": 2747,
+  "name": "Solus Dellagar",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "ranger": {
+  "npcId": 2779,
+  "name": "Ranger",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "surok_magis": {
+  "npcId": 5834,
+  "name": "Surok Magis",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "surok_magis_dagonhai": {
+  "npcId": 5835,
+  "name": "Surok Magis",
+  "actions": [
+   "Talk-To",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "thormac": {
+  "npcId": 389,
+  "name": "Thormac",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "duke": {
+  "npcId": 741,
+  "name": "Duke Horacio",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "beekeeper": {
+  "npcId": 4416,
+  "name": "Bee keeper",
+  "actions": [
+   "Talk-To",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "ahrim": {
+  "npcId": 2025,
+  "name": "Ahrim the Blighted",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dharok": {
+  "npcId": 2026,
+  "name": "Dharok the Wretched",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "guthan": {
+  "npcId": 2027,
+  "name": "Guthan the Infested",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "karil": {
+  "npcId": 2028,
+  "name": "Karil the Tainted",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "torag": {
+  "npcId": 2029,
+  "name": "Torag the Corrupted",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "verac": {
+  "npcId": 2030,
+  "name": "Verac the Defiled",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "unicorn_foal": {
+  "npcId": 1328,
+  "name": "Unicorn Foal",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "skeleton_mage": {
+  "npcId": 94,
+  "name": "Skeleton Mage",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "skeleton_2": {
+  "npcId": 93,
+  "name": "Skeleton",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "zombie_2": {
+  "npcId": 73,
+  "name": "Zombie",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "zombie_3": {
+  "npcId": 74,
+  "name": "Zombie",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "zombie_4": {
+  "npcId": 419,
+  "name": "Zombie",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "goblin_2": {
+  "npcId": 101,
+  "name": "Goblin",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "goblin_3": {
+  "npcId": 102,
+  "name": "Goblin",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "giant_rat_2": {
+  "npcId": 87,
+  "name": "Giant rat",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "duck": {
+  "npcId": 46,
+  "name": "Duck",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "duckling": {
+  "npcId": 2694,
+  "name": "Duckling",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "seagull": {
+  "npcId": 6115,
+  "name": "Seagull",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "sheep": {
+  "npcId": 42,
+  "name": "Sheep",
+  "actions": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "sheep_2": {
+  "npcId": 43,
+  "name": "Sheep",
+  "actions": [
+   "Shear",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "ram": {
+  "npcId": 3672,
+  "name": "Ram",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "guard_dog": {
+  "npcId": 99,
+  "name": "Guard dog",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "wolf": {
+  "npcId": 95,
+  "name": "Wolf",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dwarf": {
+  "npcId": 118,
+  "name": "Dwarf",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "hobgoblin": {
+  "npcId": 122,
+  "name": "Hobgoblin",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "bear_cub": {
+  "npcId": 1326,
+  "name": "Bear Cub",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "black_bear": {
+  "npcId": 106,
+  "name": "Black bear",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "hill_giant": {
+  "npcId": 117,
+  "name": "Hill Giant",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "moss_giant": {
+  "npcId": 112,
+  "name": "Moss giant",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "fire_giant": {
+  "npcId": 110,
+  "name": "Fire giant",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "ice_giant": {
+  "npcId": 111,
+  "name": "Ice giant",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "lesser_demon": {
+  "npcId": 82,
+  "name": "Lesser demon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "greater_demon": {
+  "npcId": 83,
+  "name": "Greater demon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "scorpion": {
+  "npcId": 107,
+  "name": "Scorpion",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "deadly_red_spider": {
+  "npcId": 63,
+  "name": "Deadly red spider",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "giant_bat": {
+  "npcId": 78,
+  "name": "Giant bat",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "crawling_hand": {
+  "npcId": 1648,
+  "name": "Crawling Hand",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "banshee": {
+  "npcId": 1612,
+  "name": "Banshee",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "blue_dragon": {
+  "npcId": 55,
+  "name": "Blue dragon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "green_dragon": {
+  "npcId": 941,
+  "name": "Green dragon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "red_dragon": {
+  "npcId": 53,
+  "name": "Red dragon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "black_dragon": {
+  "npcId": 54,
+  "name": "Black dragon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "snake": {
+  "npcId": 128,
+  "name": "Snake",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "earth_warrior": {
+  "npcId": 124,
+  "name": "Earth warrior",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chaos_druid": {
+  "npcId": 181,
+  "name": "Chaos druid",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "hans": {
+  "npcId": 0,
+  "name": "Hans",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "lumbridge_guide": {
+  "npcId": 2244,
+  "name": "Lumbridge Guide",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "cook": {
+  "npcId": 278,
+  "name": "Cook",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "fisherman": {
+  "npcId": 219,
+  "name": "Fisherman",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "miner": {
+  "npcId": 5497,
+  "name": "Miner",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "beggar": {
+  "npcId": 252,
+  "name": "Beggar",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "child": {
+  "npcId": 2874,
+  "name": "Child",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "schoolgirl": {
+  "npcId": 10,
+  "name": "Schoolgirl",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "gardener": {
+  "npcId": 1217,
+  "name": "Gardener",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "shop_assistant": {
+  "npcId": 521,
+  "name": "Shop assistant",
+  "actions": [
+   "Talk-to",
+   null,
+   "Trade",
+   null,
+   null
+  ]
+ },
+ "apprentice": {
+  "npcId": 1510,
+  "name": "Apprentice",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "drunken_man": {
+  "npcId": 3222,
+  "name": "Drunken man",
+  "actions": [
+   "Talk-to",
+   "Attack",
+   "Pickpocket",
+   null,
+   null
+  ]
+ },
+ "tanner": {
+  "npcId": 804,
+  "name": "Tanner",
+  "actions": [
+   "Talk-to",
+   null,
+   "Trade",
+   null,
+   null
+  ]
+ },
+ "bob": {
+  "npcId": 519,
+  "name": "Bob",
+  "actions": [
+   "Talk-to",
+   null,
+   "Trade",
+   null,
+   null
+  ]
+ },
+ "wise_old_man": {
+  "npcId": 2253,
+  "name": "Wise Old Man",
+  "actions": [
+   "Talk-to",
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "dagannoth_supreme": {
+  "npcId": 2881,
+  "name": "Dagannoth Supreme",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dagannoth_prime": {
+  "npcId": 2882,
+  "name": "Dagannoth Prime",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dagannoth_rex": {
+  "npcId": 2883,
+  "name": "Dagannoth Rex",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "king_black_dragon": {
+  "npcId": 50,
+  "name": "King Black Dragon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "dark_warrior": {
+  "npcId": 192,
+  "name": "Dark warrior",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "bandit": {
+  "npcId": 195,
+  "name": "Bandit",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "chaos_dwarf": {
+  "npcId": 119,
+  "name": "Chaos dwarf",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "black_unicorn": {
+  "npcId": 133,
+  "name": "Black unicorn",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "grizzly_bear": {
+  "npcId": 105,
+  "name": "Grizzly bear",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "black_demon": {
+  "npcId": 84,
+  "name": "Black Demon",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "scully": {
+  "npcId": 90,
+  "name": "Scully",
+  "actions": [
+   null,
+   "Attack",
+   null,
+   null,
+   null
+  ]
+ },
+ "crab": {
+  "npcId": 2706,
+  "name": "Crab",
+  "actions": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ }
+}
